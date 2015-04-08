@@ -1,0 +1,40 @@
+Git is a distributed version control system.
+Git is free software.
+二/  配置邮箱 用户名
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git commit -m "commit strings dir"
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'zhoulp@zhoulp-ThinkPad-T420.(none)')
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git config --global user.email "zhoulpg@gmail.com"
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git config --global user.name "zhoulpg"
+
+
+三/ 提交一个文件到  github 
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ touch firstcommit.txt
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git add firstcommit.txt 
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$  git commit -o firstcommit.txt  -m "commit strings dir"
+[master 9cc5a71] commit strings dir
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 firstcommit.txt
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git remote add origin git@github.com:zhoulipeng/clibs.git
+fatal: 远程 origin 已经存在。
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git remote add mywork git@github.com:zhoulipeng/clibs.git
+zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git push -u mywork master
+Counting objects: 4, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 277 bytes | 0 bytes/s, done.
+Total 3 (delta 1), reused 0 (delta 0)
+To git@github.com:zhoulipeng/clibs.git
+   633dc5c..9cc5a71  master -> master
+分支 master 设置为跟踪来自 mywork 的远程分支 master。
+
