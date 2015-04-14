@@ -38,3 +38,7 @@ To git@github.com:zhoulipeng/clibs.git
    633dc5c..9cc5a71  master -> master
 分支 master 设置为跟踪来自 mywork 的远程分支 master。
 
+四
+// 如果makefile 已经提交， 从新设置为未提交状态
+
+git reset HEAD^1 Makefile
