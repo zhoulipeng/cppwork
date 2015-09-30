@@ -1,21 +1,89 @@
-Git is a distributed version control system.
-Git is free software.
-二/  配置邮箱 用户名
-zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git commit -m "commit strings dir"
+***********************************************************************************************
+                        本地机器配置github帐号
+***********************************************************************************************
 
-*** Please tell me who you are.
+1 ------------- 设置邮箱，用户名 ---------------
+ 在本地建立一个文件夹，然后做一些全局变量的初始化
 
-Run
+git config --global user.name = "用户名或者用户ID"
 
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
+git config --global user.email = "邮箱"
 
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'zhoulp@zhoulp-ThinkPad-T420.(none)')
 zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git config --global user.email "zhoulpg@gmail.com"
 zhoulp@zhoulp-ThinkPad-T420:~/workshop/github/project1/clibs$ git config --global user.name "zhoulpg"
+
+
+这两个选项会在以后的使用过程中自动添加到代码中。
+
+2 ------------------------------------------
+创建验证用的公钥
+这个是比较复杂和困扰大多数人的地方，因为 git 是通过 ssh 的方式访问资源库的，所以需要在本地创建验证用的文件。
+
+使用命令：ssh-keygen -C 'you email address@gmail.com' -t rsa
+
+会在用户目录 ~/.ssh/ 下建立相应的密钥文件
+
+可以使用 ssh -v git@github.com 命令来测试链接是否畅通
+3 ------------在github网站 Setting --> SSH keys 添加创建的公共密钥
+上传公钥
+在 github.com 的界面中 选择右上角的 Account Settings，然后选择 SSH Public Keys ，选择新加。
+
+Title 可以随便命名，Key 的内容拷贝自 ~/.ssh/id_rsa.pub 中的内容，
+完成后，可以再使用 ssh -v git@github.com 进行测试。看到下面的信息表示验证成功。
+
+4 ------------  ssh -v git@github.com 命令测试是否成功，显示下面的信息， 标示成功了
+zhoulp@zhoulp-desktop:/data2/workshop/github$  ssh -v git@github.com
+OpenSSH_5.3p1 Debian-3ubuntu7.1, OpenSSL 0.9.8k 25 Mar 2009
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Applying options for *
+debug1: Connecting to github.com [192.30.252.128] port 22.
+debug1: Connection established.
+debug1: identity file /home/zhoulp/.ssh/identity type -1
+debug1: identity file /home/zhoulp/.ssh/id_rsa type 1
+debug1: Checking blacklist file /usr/share/ssh/blacklist.RSA-2048
+debug1: Checking blacklist file /etc/ssh/blacklist.RSA-2048
+debug1: identity file /home/zhoulp/.ssh/id_dsa type -1
+debug1: Remote protocol version 2.0, remote software version libssh-0.7.0
+debug1: no match: libssh-0.7.0
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_5.3p1 Debian-3ubuntu7.1
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: server->client aes128-ctr hmac-sha1 none
+debug1: kex: client->server aes128-ctr hmac-sha1 none
+debug1: sending SSH2_MSG_KEXDH_INIT
+debug1: expecting SSH2_MSG_KEXDH_REPLY
+The authenticity of host 'github.com (192.30.252.128)' can't be established.
+RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of known hosts.
+debug1: ssh_rsa_verify: signature correct
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey
+debug1: Next authentication method: publickey
+debug1: Offering public key: /home/zhoulp/.ssh/id_rsa
+debug1: Server accepts key: pkalg ssh-rsa blen 277
+debug1: Authentication succeeded (publickey).
+debug1: channel 0: new [client-session]
+debug1: Entering interactive session.
+debug1: Sending environment.
+debug1: Sending env LANG = en_US.utf8
+PTY allocation request failed on channel 0
+debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+Hi zhoulipeng! You've successfully authenticated, but GitHub does not provide shell access.
+                                                                                           debug1: channel 0: free: client-session, nchannels 1
+Connection to github.com closed.
+Transferred: sent 2648, received 2008 bytes, in 0.8 seconds
+Bytes per second: sent 3492.7, received 2648.6
+debug1: Exit status 1
+
+
+
+
 
 
 三/ 提交一个文件到  github 
