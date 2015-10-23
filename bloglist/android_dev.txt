@@ -1,0 +1,2 @@
+https://github.com/kesenhoo/android-training-course-in-chinese // Google Android官方培训翻译项目
+http://www.androidweekly.cn/  android 开发技术周报
