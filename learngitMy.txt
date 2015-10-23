@@ -110,3 +110,62 @@ To git@github.com:zhoulipeng/clibs.git
 // 如果makefile 已经提交， 从新设置为未提交状态
 
 git reset HEAD^1 Makefile
+
+
+五
+版本回退
+在Git中，用HEAD表示当前版本，上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
+git log // 查看提交的日志记录, 不包括会退的记录
+git log --pretty=oneline // 提交日志精简
+git reset --hard HEAD^ // 撤销修改， 回退到上一个版本
+
+git reflog// 用来记录你的每一次命令， 即使是回退
+git reset --hard 92ce730 //回到92ce730代表的修改状态。
+
+zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git log --pretty=oneline
+92ce730fbf36464ef7962a5fb3ed2de4d51bb73f add clock_gettime_gettimeofday
+e6719a33ab66f89a22585c72dfb310775bfcfe59 提交测试cpu性能测试函数
+42c77234018c44f2bc97eee4d4faf7c1b4f85f34 TODO 添加待做事项
+46ba3ecba165215bbad3b1788acdc6488851b48d 提交可用的stunserver 服务器地址
+5225ca6d8a640f0479b3315a04d90d5318756e94 添加TODO待做事项文档
+c0889e8ee437b25afc0d6c37cd2a0929ea5c3549 完善 git 学习资料
+cf5f306cb4780216233020419d4d7d387cbbc681 增加filelog目录， 存放自己写的文件日志代码
+4766fbeac796638090a09507b5b7e36b5fd97bae 增加virtual: cpp 接口及继承， time 时间相关的测试代码
+7b61639662661c7f0ddefd96ca2bc73a49b34d0d 提交filelog, time两个目录，filelog存放日志源码，time放时间相关处理函数
+69643888bc3fdc3082f89e02fbf855d4ca2a5837 首次提交 filesystem:包含三个程序1. 检测LinuxU盘插入 2. 获取磁盘分区空间 3. 获取各分区磁盘设备挂载点
+78dad030e45afb767f4401eaed637660e769a718 更新 git doc
+393a84622de66519cdc1b9aa20d2080ad1d93186 提交learngitMy.txt , 该文档内容是记录一些git控制命令
+6f37eaa94595e9cc7bf71d5070792597534043f1 commit dir:abstract  memory  print threadpool  tree
+d08722b48343fb5b94a89513dfed61dedcb77d65 Initial commit
+zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git reset --hard HEAD^
+HEAD is now at e6719a3 提交测试cpu性能测试函数
+zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git log --pretty=oneline
+e6719a33ab66f89a22585c72dfb310775bfcfe59 提交测试cpu性能测试函数
+42c77234018c44f2bc97eee4d4faf7c1b4f85f34 TODO 添加待做事项
+46ba3ecba165215bbad3b1788acdc6488851b48d 提交可用的stunserver 服务器地址
+5225ca6d8a640f0479b3315a04d90d5318756e94 添加TODO待做事项文档
+c0889e8ee437b25afc0d6c37cd2a0929ea5c3549 完善 git 学习资料
+cf5f306cb4780216233020419d4d7d387cbbc681 增加filelog目录， 存放自己写的文件日志代码
+4766fbeac796638090a09507b5b7e36b5fd97bae 增加virtual: cpp 接口及继承， time 时间相关的测试代码
+7b61639662661c7f0ddefd96ca2bc73a49b34d0d 提交filelog, time两个目录，filelog存放日志源码，time放时间相关处理函数
+69643888bc3fdc3082f89e02fbf855d4ca2a5837 首次提交 filesystem:包含三个程序1. 检测LinuxU盘插入 2. 获取磁盘分区空间 3. 获取各分区磁盘设备挂载点
+78dad030e45afb767f4401eaed637660e769a718 更新 git doc
+393a84622de66519cdc1b9aa20d2080ad1d93186 提交learngitMy.txt , 该文档内容是记录一些git控制命令
+6f37eaa94595e9cc7bf71d5070792597534043f1 commit dir:abstract  memory  print threadpool  tree
+d08722b48343fb5b94a89513dfed61dedcb77d65 Initial commit
+
+
+zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git reflog
+e6719a3 HEAD@{0}: HEAD^: updating HEAD
+92ce730 HEAD@{1}: commit: add clock_gettime_gettimeofday
+e6719a3 HEAD@{2}: commit: 提交测试cpu性能测试函数
+42c7723 HEAD@{3}: commit: TODO 添加待做事项
+46ba3ec HEAD@{4}: commit: 提交可用的stunserver 服务器地址
+5225ca6 HEAD@{5}: commit: 添加TODO待做事项文档
+c0889e8 HEAD@{6}: commit: 完善 git 学习资料
+cf5f306 HEAD@{7}: commit: 增加filelog目录， 存放自己写的文件日志代码
+4766fbe HEAD@{8}: commit: 增加virtual: cpp 接口及继承， time 时间相关的测试代码
+7b61639 HEAD@{9}: commit: 提交filelog, time两个目录，filelog存放日志源码，time放时间相关处理函数
+6964388 HEAD@{10}: clone: from https://github.com/zhoulipeng/cppwork.git
+zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git reset --hard 92ce730
+
