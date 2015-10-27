@@ -1,2 +1,4 @@
 ****     http://www.jinbuguo.com/  // 金步国作品集 包含一份 apache2 手册， linux 相关知识，
 php知识 --内容丰富
+*****    http://timyang.net/  //后端技术 redis Memcached 
+*****    http://blog.sina.com.cn/yaozj //ZeroMQ ProtocolBuffers Libevent Asio ZooKeeper
