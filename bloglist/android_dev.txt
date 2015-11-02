@@ -3,3 +3,4 @@ http://www.androidweekly.cn/  android 开发技术周报
 http://www.cnblogs.com/skyseraph/archive/2012/04/01/2429384.html //H264—MP4格式及在MP4文件中提取H264的SPS、PPS及码流
 http://www.cnblogs.com/skyseraph/archive/2012/03/26/2418665.html //Android 实时视频采集—Cameara预览采集
 http://blog.csdn.net/mirkerson/article/details/37694719 Android 用MediaCodec实现视频硬解码 
+http://www.thinksaas.cn/group/topic/348569/ Android中MediaMuxer跟MediaCodec用例
