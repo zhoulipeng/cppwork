@@ -7,3 +7,7 @@ http://www.thinksaas.cn/group/topic/348569/ Android中MediaMuxer跟MediaCodec用
 http://web.mit.edu/clio/MacData/afs/sipb/project/android/docs/reference/android/net/rtp/package-summary.html // android rtp 相关api的介绍
 http://blog.sina.com.cn/s/blog_99cc8f0d0101sk4d.html // RTP stream 接收者 自己动手写RTP服务器——关于RTP协议
 http://blog.csdn.net/xipiaoyouzi/article/details/37599759 //Android MediaCodec小结
+http://blog.csdn.net/dahuaishu2010_/article/details/14103289 // Android 媒体编解码器 里面提到了：声学回声消除器AcousticEchoCanceler AutomaticGainControl（自动增益控制） NoiseSuppressor（噪声抑制器）
+
+http://www.itstrike.cn/Question/35467cf9-7ab3-4068-97d6-6b37c0fd9a8a.html //解码 h264 数据包通过 mediaCodec dequeueInputBuffer() 返回"没有这种缓冲区是目前可用的"
+http://blog.csdn.net/t12x3456/article/details/12526997 Android4.1新特性及新增API
