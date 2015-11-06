@@ -4,3 +4,6 @@ http://www.cnblogs.com/skyseraph/archive/2012/04/01/2429384.html //H264—MP4格
 http://www.cnblogs.com/skyseraph/archive/2012/03/26/2418665.html //Android 实时视频采集—Cameara预览采集
 http://blog.csdn.net/mirkerson/article/details/37694719 Android 用MediaCodec实现视频硬解码 
 http://www.thinksaas.cn/group/topic/348569/ Android中MediaMuxer跟MediaCodec用例
+http://web.mit.edu/clio/MacData/afs/sipb/project/android/docs/reference/android/net/rtp/package-summary.html // android rtp 相关api的介绍
+http://blog.sina.com.cn/s/blog_99cc8f0d0101sk4d.html // RTP stream 接收者 自己动手写RTP服务器——关于RTP协议
+http://blog.csdn.net/xipiaoyouzi/article/details/37599759 //Android MediaCodec小结
