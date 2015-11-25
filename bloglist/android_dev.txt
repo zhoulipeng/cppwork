@@ -11,3 +11,5 @@ http://blog.csdn.net/dahuaishu2010_/article/details/14103289 // Android 媒体�
 
 http://www.itstrike.cn/Question/35467cf9-7ab3-4068-97d6-6b37c0fd9a8a.html //解码 h264 数据包通过 mediaCodec dequeueInputBuffer() 返回"没有这种缓冲区是目前可用的"
 http://blog.csdn.net/t12x3456/article/details/12526997 Android4.1新特性及新增API
+http://mobile.51cto.com/amedia-375030.htm  // Android通过流播放声音 播放amr 解码后的pcm编码
+http://blog.csdn.net/zgyulongfei/article/details/7753163  Android音频实时传输与播放（三）：AMR硬编码与硬解码
