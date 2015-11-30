@@ -14,3 +14,4 @@ http://blog.csdn.net/t12x3456/article/details/12526997 Android4.1新特性及新
 http://mobile.51cto.com/amedia-375030.htm  // Android通过流播放声音 播放amr 解码后的pcm编码
 http://blog.csdn.net/zgyulongfei/article/details/7753163  Android音频实时传输与播放（三）：AMR硬编码与硬解码
 http://www.4byte.cn/question/689453/illegalstateexception-when-mediacodec-configure-android.html //我试着创建“音频编码器/ 3GPP”和我的应用程序崩溃
+http://www.xuebuyuan.com/1799601.html //这个例子配置了编码格式、视频大小、比特率、帧率等参数，然后在camera 预览的回调函数里把yuv420数据推送给mediacodec，编码后取出nalu，写入到文件。
