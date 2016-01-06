@@ -15,3 +15,8 @@ http://mobile.51cto.com/amedia-375030.htm  // Android通过流播放声音 播�
 http://blog.csdn.net/zgyulongfei/article/details/7753163  Android音频实时传输与播放（三）：AMR硬编码与硬解码
 http://www.4byte.cn/question/689453/illegalstateexception-when-mediacodec-configure-android.html //我试着创建“音频编码器/ 3GPP”和我的应用程序崩溃
 http://www.xuebuyuan.com/1799601.html //这个例子配置了编码格式、视频大小、比特率、帧率等参数，然后在camera 预览的回调函数里把yuv420数据推送给mediacodec，编码后取出nalu，写入到文件。
+//android回声抑制研究
+http://blog.csdn.net/liulina603/article/details/19831495 webrtc 的回声抵消(aec、aecm)算法简介
+http://www.doc88.com/p-7788837717525.html 基于WebRTC的电话回声消除的研究与实现
+http://blog.csdn.net/audioaec/article/details/12685921  Android 平台语音通话及回音消除、噪音消除研究 
+
