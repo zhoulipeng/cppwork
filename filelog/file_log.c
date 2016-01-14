@@ -4,7 +4,6 @@
  *  Created on: Jul 8, 2015
  *      Author: zhoulp
  */
-#include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <pthread.h>
@@ -12,10 +11,11 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdio.h>
 #include "file_log.h"
 
-static FILE *file = NULL;
-static int out_priority = 0;
+FILE *__log_out_file = NULL;
+int __log_out_priority = 0;
 static int write_count = 0;
 static int flag_fflush = 0;
 static unsigned int file_max_sizes = 0;
@@ -48,10 +48,10 @@ static void Log_switch()
 			stat_info.st_blksize, stat_info.st_blocks, stat_info.st_blksize * stat_info.st_blocks, stat_info.st_size);
 	if(stat_info.st_size > threshold_switch_size)
 	{
-		if(file)
+		if(__log_out_file)
 		{
-			fclose(file);
-			file = NULL;
+			fclose(__log_out_file);
+			__log_out_file = NULL;
 		}
 
 		int i = total_num-1;
@@ -62,7 +62,7 @@ static void Log_switch()
 			printf("file_name[%d] = %s , file_name[%d] = %s\n", i-1, file_name[i-1], i, file_name[i]);
 			rename(file_name[i -1], file_name[i]);
 		}
-		file = fopen(file_name[0], "w+");
+		__log_out_file = fopen(file_name[0], "w+");
 
 	}
 
@@ -109,7 +109,7 @@ int Log_init(const char *prefix_str, unsigned int log_file_num, unsigned int max
 
 	write_count = 0;
 	total_num = log_file_num;
-	out_priority = priority;
+	__log_out_priority = priority;
 	strcpy(prefix, prefix_str);
 	int i = total_num-1;
 	for(;i  >= 0; i--){
@@ -117,18 +117,18 @@ int Log_init(const char *prefix_str, unsigned int log_file_num, unsigned int max
 		printf("file_name[%d] = %s\n", i, file_name[i]);
 	}
 	Log_switch_bak();
-	file = fopen(file_name[0], "w+");
+	__log_out_file = fopen(file_name[0], "w+");
 	pthread_mutex_unlock(&log_mtx);
 	return 0;
 }
 
 void Log_close()
 {
-	out_priority = 0;
-	if(file)
+	__log_out_priority = 0;
+	if(__log_out_file)
 	{
-		fclose(file);
-		file = NULL;
+		fclose(__log_out_file);
+		__log_out_file = NULL;
 	}
 
 }
@@ -136,7 +136,7 @@ void Log_close()
 
 inline void Log_write(int priority, const char* a_format,...)
 {
-	if(priority > out_priority || file == NULL) return;
+	//if(priority > __log_out_priority || __log_out_file == NULL) return;
 	va_list va;
 	va_start(va, a_format);
 	//printf("Log_write1 \n");
@@ -149,8 +149,8 @@ inline void Log_write(int priority, const char* a_format,...)
 	}
 	//printf("Log_write2 \n");
 
-	vfprintf(file, a_format, va);
-	if(flag_fflush)fflush(file);
+	vfprintf(__log_out_file, a_format, va);
+	if(flag_fflush)fflush(__log_out_file);
 	pthread_mutex_unlock(&log_mtx);
 	va_end(va);
 }
@@ -192,14 +192,14 @@ int main1()
 	Log_init("log_test", 3, 1024*1024*10, LOG_INFO, LOG_WITH_BUFFER);
 	pthread_t pid1, pid2;
 	struct timeval tv, tv_bak;
-	struct timezone tz;
-	gettimeofday (&tv_bak , &tz);
+
+	gettimeofday(&tv_bak, NULL);
 	Log_write(1, "main start:%ld %ld\n", tv_bak.tv_sec, tv_bak.tv_usec);
 	pthread_create(&pid1, NULL, thread_write1, NULL);
 	pthread_create(&pid2, NULL, thread_write2, NULL);
 	pthread_join(pid1, NULL);
 	pthread_join(pid2, NULL);
-	gettimeofday(&tv , &tz);
+	gettimeofday(&tv, NULL);
 	printf("main exit:%ld %ld \n", tv.tv_sec - tv_bak.tv_sec, tv.tv_usec - tv_bak.tv_usec);
 	struct stat stat_info;
 	Log_close();

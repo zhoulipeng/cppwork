@@ -17,7 +17,8 @@ enum
 
 };
 extern char LEVEL[6][16];
-
+extern int __log_out_priority;
+extern FILE *__log_out_file;
 /*
  * prefix_str 日志文件名前缀字符串， 比如 prefix_str = "nihao_log",生成的日志文件名为 nihao_log.0
  * log_file_num 日志文件个数， 超过这个数,日志自动覆盖， 覆盖规则
@@ -31,33 +32,34 @@ void Log_close();
 
 inline void Log_write(int priority, const char* a_format,...);
 
-
+// if(priority > __log_out_priority || __log_out_file == NULL) break; 把判断放到函数外面， 提高性能
 #define LOG(level, format, ...) \
-    do { \
+    do {if(level > __log_out_priority || __log_out_file == NULL) break;\
     	Log_write(level, "[%s|| @ , ] " format "", \
     			LEVEL[level], ##__VA_ARGS__ ); \
     }while(0)
 
 #define LOG_LINE(level, format, ...) \
-    do { \
+    do {if(level > __log_out_priority || __log_out_file == NULL) break;\
     	Log_write(level, "[%s||@%s,%d] " format "", \
     			LEVEL[level], __FILE__, __LINE__, ##__VA_ARGS__ ); \
     }while(0)
 // 打印日志级别信息 + 时间 +    + 文件名 + 行数
 #define LOG_TIME(level, format, ...) \
-    do { time_t t;time(&t);struct tm tm_t; localtime_r(&t, &tm_t);\
+    do {if(level > __log_out_priority || __log_out_file == NULL) break;\
+    time_t t;time(&t);struct tm tm_t; localtime_r(&t, &tm_t);\
     	Log_write(level, "[%s||%ld|@%s,%d] " format "", \
     			LEVEL[level], localtimetime(NULL), __FILE__, __LINE__, ##__VA_ARGS__ ); \
     }while(0)
 // 打印日志级别信息 + 时间 +    + 文件名 + 行数
 #define LOG_TFL(level, format, ...) \
-    do { \
+    do {if(level > __log_out_priority || __log_out_file == NULL) break;\
     	Log_write(level, "[%s|%ld|@%s,%d] " format "", \
     			LEVEL[level], time(NULL), __FILE__, __LINE__, ##__VA_ARGS__ ); \
     }while(0)
 // 打印日志级别信息 + 时间 + 函数 + 文件名 + 行数
 #define LOG_ALL(level, format, ...) \
-    do { \
+    do {if(level > __log_out_priority || __log_out_file == NULL) break;\
     	Log_write(level, "[%s|%ld|%s@%s,%d] " format "", \
     			LEVEL[level], time(NULL), __func__, __FILE__, __LINE__, ##__VA_ARGS__ ); \
     }while(0)
