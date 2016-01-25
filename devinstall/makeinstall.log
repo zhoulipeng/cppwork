@@ -1,0 +1,241 @@
+com:pqtel 
+date :20160122 
+host:ubuntu 14.04.3
+uname -a:Linux yan-Vostro-3800 3.13.0-74-generic #118-Ubuntu SMP Thu Dec 17 22:52:10 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+gcc (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4
+g++ (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4
+部署中维世纪后台服务程序依赖库安装全记录
+
+在安装好库后:可能会有以下问题
+1 使用eclise c/c++ ide的华，有些类型还是识别不了，　右击工程弹出右键菜单　--> index --> Freshen All Files
+I had the same problem. It could be resolved by flushing the Eclipse indexer.
+I used the projects context menu and selected Index->Rebuild and Index->Freshen All Files. The last removed the error messages.
+
+2 所有　makefile 要加　-lpthread连接 
+3 json 头文件只要加 #include <libjson/libjson.h> 就可以了
+4 程序的配置文件，日志配置文件位置修改
+###############################################################################################
+
+安装　mysql-connector
+mysql-connector-c++-1.1.7-linux-ubuntu14.04-x86-64bit.tar.gz
+mysql-connector-c++-1.1.7-linux-glibc2.5-x86-64bit.tar.gz
+去mysql官网上下载，　解压后把对应的文件ｃｏｐｙ到/usr/local/include 与　/usr/local/lib目录即可
+我这里选择　mysql-connector-c++-1.1.7-linux-ubuntu14.04-x86-64bit.tar.gz　解压安装
+
+
+暂时不安装mysql软件
+sudo apt-get install mysql-client-core-5.6
+
+The following packages will be REMOVED:
+  mysql-client mysql-client-5.5 mysql-client-core-5.5 mysql-workbench
+The following NEW packages will be installed:
+  mysql-client-core-5.6
+
+###############################################################################################
+uuid 开发包的安装
+#include <uuid/uuid.h>
+sudo apt-get install uuid-dev
+
+Get:1 http://archive.ubuntu.com/ubuntu/ trusty-updates/main uuid-dev amd64 2.20.1-5.1ubuntu20.7 [23.7 kB]
+
+boost_1_57_0.tar.bz2
+libevent-2.0.22-stable.tar.gz
+这两个以前就安装好了，不再说明
+###############################################################################################
+sqlite3
+libsqlite3-0 - SQLite 3 shared library
+libsqlite3-0-dbg - SQLite 3 debugging symbols
+libsqlite3-dev - SQLite 3 development files
+ubuntu上使用　sudo apt-get install softname 安装就可以了
+###############################################################################################
+
+安装libjson  c++ 语言版本
+下载　http://sourceforge.net/projects/libjson/
+１　解压后 首先注释　 JSONOptions.h 这一行　//zhoulp #define JSON_LIBRARY
+make
+make test # 失败　修改 makefile _internal/TestSuite/TestSuite2/JSON_Base64/json_decode64.cpp 把这样的路径都改成　_internal/TestSuite2/JSON_Base64/
+#再make test
+make install 
+# 失败 修改　makefile 269行 :cp -rv $(srcdir)/Dependencies/ $(include_path)/$(libname_hdr)/$(srcdir)
+ 改为 cp -rv _internal/Dependencies/ $(include_path)/$(libname_hdr)/_internal
+
+###############################################################################################
+Redis 2.8.24
+
+make
+make test
+make install
+
+
+
+                   The End
+
+Execution time of different units:
+  0 seconds - unit/printver
+  0 seconds - unit/quit
+  1 seconds - unit/scan
+  1 seconds - unit/auth
+  1 seconds - unit/protocol
+  2 seconds - unit/multi
+  10 seconds - unit/type/list-2
+  10 seconds - unit/expire
+  3 seconds - integration/rdb
+  13 seconds - unit/type/hash
+  1 seconds - unit/pubsub
+  14 seconds - unit/type/list
+  14 seconds - unit/type/set
+  4 seconds - integration/aof
+  1 seconds - integration/convert-zipmap-hash-on-load
+  1 seconds - unit/introspection
+  15 seconds - unit/other
+  1 seconds - unit/slowlog
+  15 seconds - unit/type/zset
+  2 seconds - unit/limits
+  5 seconds - unit/scripting
+  20 seconds - unit/sort
+  6 seconds - unit/dump
+  23 seconds - integration/replication-2
+  9 seconds - unit/bitops
+  12 seconds - unit/maxmemory
+  27 seconds - unit/basic
+  13 seconds - unit/memefficiency
+  29 seconds - unit/type/list-3
+  19 seconds - unit/hyperloglog
+  37 seconds - integration/replication-3
+  43 seconds - unit/aofrw
+  45 seconds - integration/replication-4
+  53 seconds - unit/obuf-limits
+  86 seconds - integration/replication
+  105 seconds - integration/replication-psync
+
+\o/ All tests passed without errors!
+
+Cleanup: may take some time... OK
+make[1]: Leaving directory `/data/workshop/thirdsource/redis-2.8.24/src'
+###############################################################################################
+hiredis-0.13.3 /data/workshop/thirdsource/hiredis-0.13.3
+make 
+make test
+make install
+
+#这个测试失败，关系不大
+Testing against Unix socket connection (/tmp/redis.sock):
+Connection error: No such file or directory
+make: *** [test] Error 1
+
+按照这个链接配置重启ｒｅｄｉｓ可以解决 这个测试错误
+https://github.com/NodeRedis/node_redis/issues/204
+
+
+
+You can make some edits to your redis.conf file so that servers listen on a socket; e.g.
+
+# 0 = do not listen on a port
+port 0
+
+# listen on localhost only
+bind 127.0.0.1
+
+# create a unix domain socket to listen on
+unixsocket /tmp/redis.sock
+
+# set permissions for the socket
+unixsocketperm 755
+
+Then, within your Node app, you can do the following to connect to your Redis server:
+
+var redis = require('redis');
+
+var redisClient = redis.createClient('/tmp/redis.sock');
+
+###############################################################################################
+
+编译参考 http://www.linuxidc.com/Linux/2012-09/69658.htm
+系统平台
+CentOS 6.3   linux内核版本 2.6   g++ (GCC) 4.4.6
+
+
+以下是详细的编译过程：
+一.下载解压
+http://logging.apache.org/log4cxx/， http://apr.apache.org/
+
+apr-1.4.6.tar.gz,  apr-util-1.4.1.tar.gz,  apache-log4cxx-0.10.0.tar.gz
+
+1.tar zxvf apr-1.4.6.tar.gz
+2.tar zxvf apr-util-1.4.1.tar.gz
+3.tar zxvf apache-log4cxx-0.10.0.tar.gz
+
+二 .编译安装
+首先安装apr-1.4.6，切换cd apr-1.4.6，配置./configure --prefix=/usr/local/apr，接着make， make install
+
+接着安装apr-util-1.4.1，切换至cd ../apr-util-1.4.1， ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr，接着make，make install；
+
+最后安装apache-log4cxx-0.10.0，切换cd ../apache-log4cxx-0.10.0，配置./configure --prefix=/usr/local/log4cxx --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util
+注意配置前需进行以下操作：
+
+
+下面是我的编译安装:
+apr-1.5.2.tar.gz
+apr-util-1.5.4.tar.gz
+apache-log4cxx-0.10.0.tar.gz
+/data/workshop/thirdsource/apr-util-1.5.4
+a  安装 apr-1.5.2.tar.gz 
+./configure # default /usr/local/ 下　apr目录
+make
+make test #testlfs             : |Line 345: Large Files not supported
+make install #不想要了　删除安装文件夹　/usr/local/apr 即可
+b 安装 apr-util 
+./configure --prefix=/data/workshop/thirdsource/apr-util-1.5.4/install_prefix/ --with-apr=/usr/local/apr
+make 
+make test # All tests passed.
+make install
+
+c 安装log4cxx
+./configure --with-apr=/usr/local/apr --with-apr-util=/data/workshop/thirdsource/apr-util-1.5.4/install_prefix
+make 出错，修改下面代码　再 make
+sudo make install
+sudo make uninstall 
+
+1.vim src/main/cpp/inputstreamreader.cpp
+增加#include <string.h>；
+#include <log4cxx/logstring.h>
+#include <log4cxx/helpers/inputstreamreader.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/bytebuffer.h>
++
+#include <string.h>
++
+否则会出现inputstreamreader.cpp:66: error: 'memmove' was not declared in this scope
+make[3]: *** [inputstreamreader.lo] 错误 1
+
+2.vim src/main/cpp/socketoutputstream.cpp
+增加#include <string.h>；
+#include <log4cxx/logstring.h>
+#include <log4cxx/helpers/socketoutputstream.h>
+#include <log4cxx/helpers/socket.h>
+#include <log4cxx/helpers/bytebuffer.h>
++
+#include <string.h>
++
+否则会出现socketoutputstream.cpp:52: error: 'memcpy' was not declared in this scope
+
+
+3.vim src/examples/cpp/console.cpp
+增加#include <string.h>，#include <stdio.h>；
++
+#include <stdio.h>
++
+#include <stdlib.h>
++
+#include <string.h>
++
+#include <log4cxx/logger.h>
+#include <log4cxx/consoleappender.h>
+#include <log4cxx/simplelayout.h>
+#include <log4cxx/logmanager.h>
+#include <iostream>
+#include <locale.h>
+否则会出现
+console.cpp: In function ‘int main(int, char**)’:
+console.cpp:58: 错误：‘puts’在此作用域中尚未声明
