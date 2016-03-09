@@ -1,0 +1,61 @@
+#注意该数据库的使用的几个字符集
+zhoulp@zhoulp-ThinkPad-T420:/var/www/html$ sudo apt-get install postgresql postgresql-contrib
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树       
+正在读取状态信息... 完成       
+将会安装下列额外的软件包：
+  pgdg-keyring postgresql-9.5 postgresql-client-9.5 postgresql-client-common
+  postgresql-common postgresql-contrib-9.5
+建议安装的软件包：
+  postgresql-doc oidentd ident-server locales-all postgresql-doc-9.5
+  libdbd-pg-perl
+下列【新】软件包将被安装：
+  pgdg-keyring postgresql postgresql-9.5 postgresql-client-9.5
+  postgresql-client-common postgresql-common postgresql-contrib
+  postgresql-contrib-9.5
+升级了 0 个软件包，新安装了 8 个软件包，要卸载 0 个软件包，有 5 个软件包未被升级。
+需要下载 5,963 kB 的软件包。
+解压缩后会消耗掉 26.3 MB 的额外空间。
+您希望继续执行吗？ [Y/n] y
+获取：1 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main pgdg-keyring all 2014.1 [5,898 B]
+获取：2 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-client-common all 172.pgdg14.04+1 [76.7 kB]
+获取：3 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-client-9.5 amd64 9.5.1-1.pgdg14.04+1 [1,183 kB]
+获取：4 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-common all 172.pgdg14.04+1 [211 kB]
+获取：5 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-9.5 amd64 9.5.1-1.pgdg14.04+1 [3,930 kB]
+获取：6 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql all 9.5+172.pgdg14.04+1 [53.8 kB]
+获取：7 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-contrib-9.5 amd64 9.5.1-1.pgdg14.04+1 [449 kB]
+获取：8 http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg/main postgresql-contrib all 9.5+172.pgdg14.04+1 [53.8 kB]
+下载 5,963 kB，耗时 1分 44秒 (57.3 kB/s)                                       
+... 此处省略
+正在处理用于 ureadahead (0.100.0-16) 的触发器 ...
+正在设置 pgdg-keyring (2014.1) ...
+Removing apt.postgresql.org key from trusted.gpg: OK
+Importing apt.postgresql.org key: OK
+正在设置 postgresql-client-common (172.pgdg14.04+1) ...
+正在设置 postgresql-client-9.5 (9.5.1-1.pgdg14.04+1) ...
+update-alternatives: using /usr/share/postgresql/9.5/man/man1/psql.1.gz to provide /usr/share/man/man1/psql.1.gz (psql.1.gz) in 自动模式
+正在设置 postgresql-common (172.pgdg14.04+1) ...
+正在将用户“postgres”加入到“ssl-cert”组中
+
+Creating config file /etc/postgresql-common/createcluster.conf with new version
+
+Creating config file /etc/logrotate.d/postgresql-common with new version
+Building PostgreSQL dictionaries from installed myspell/hunspell packages...
+  en_us
+Removing obsolete dictionary files:
+ * No PostgreSQL clusters exist; see "man pg_createcluster"
+正在处理用于 ureadahead (0.100.0-16) 的触发器 ...
+正在设置 postgresql-9.5 (9.5.1-1.pgdg14.04+1) ...
+Creating new cluster 9.5/main ...
+  config /etc/postgresql/9.5/main
+  data   /var/lib/postgresql/9.5/main
+  locale zh_CN.UTF-8
+  socket /var/run/postgresql
+  port   5432
+update-alternatives: using /usr/share/postgresql/9.5/man/man1/postmaster.1.gz to provide /usr/share/man/man1/postmaster.1.gz (postmaster.1.gz) in 自动模式
+ * Starting PostgreSQL 9.5 database server                                                                                                                        [ OK ] 
+正在设置 postgresql (9.5+172.pgdg14.04+1) ...
+正在设置 postgresql-contrib-9.5 (9.5.1-1.pgdg14.04+1) ...
+正在设置 postgresql-contrib (9.5+172.pgdg14.04+1) ...
+
+
