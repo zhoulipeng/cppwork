@@ -20,3 +20,9 @@ http://blog.csdn.net/liulina603/article/details/19831495 webrtc 的回声抵消(
 http://www.doc88.com/p-7788837717525.html 基于WebRTC的电话回声消除的研究与实现
 http://blog.csdn.net/audioaec/article/details/12685921  Android 平台语音通话及回音消除、噪音消除研究 
 
+由于webrtc下载麻烦，编译麻烦，工程量大，还是决定用 speex 工程实现回声抑制功能
+http://blog.csdn.net/jzh1987710/article/details/8490484  speex编解码在android上实现 
+http://blog.csdn.net/CAZICAQUW/article/details/7333186  <开源> 基于Android的SIP电话-----Speex 回音消除 在android 平台 
+http://download.csdn.net/detail/baoyongzhang94/6869545#comment  [rar文件] android中Speex录音播放实例 
+另外 github 上搜 speex android 上面也有几个工程挺不错的 比如 https://github.com/renhuihhh/speex_android
+http://www.cnblogs.com/chef/archive/2012/07/20/2600846.html  speex开源项目的学习
