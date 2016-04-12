@@ -1,0 +1,8 @@
+记录一些日志安装记录
+redis 2.8.24
+１　下载之后解压　make
+2 可以做三个测试　make test;./runtest;./runtest-sentinel
+make install 就可以安装到系统中了
+
+apache-log4cxx-0.10.0 的 apr apr-util使用系统apt-get install安装
+hiredis 使用0.13.1
