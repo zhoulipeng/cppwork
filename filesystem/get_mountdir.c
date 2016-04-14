@@ -26,5 +26,12 @@ int main(int argc, char *argv[])
         }
 
     }
+     while (mount_list)
+     {
+        me = mount_list->me_next;
+        free_mount_entry (mount_list);
+        mount_list = me;
+     }
+
     printf("return \n");
 }

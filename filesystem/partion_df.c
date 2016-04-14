@@ -1,11 +1,13 @@
 #include <sys/statfs.h>
+#include <string.h>
 #include <stdio.h>
 
 int main()
 {
     struct statfs diskInfo;
-    
-    statfs("/dev/sdb4", &diskInfo);
+    memset(&diskInfo, 0x00, sizeof(statfs));    
+    int ret = statfs("/media/BC72-EF71", &diskInfo);
+    printf("statfs func return = %d\n", ret);
     unsigned long long blocksize = diskInfo.f_bsize;    //每个block里包含的字节数
     unsigned long long totalsize = blocksize * diskInfo.f_blocks;   //总的字节数，f_blocks为block的数目
     printf("Total_size = %llu B = %llu KB = %llu MB = %llu GB\n", 
