@@ -1,5 +1,6 @@
 /*
 [多线程]生产者消费者模型的BOOST实现
+http://blog.csdn.net/bendanban/article/details/50681114
 http://www.it165.net/pro/html/201602/61109.html
 libuv生产者，消费者模型
 http://www.it165.net/pro/html/201504/39247.html#
