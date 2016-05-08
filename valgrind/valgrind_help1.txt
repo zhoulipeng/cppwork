@@ -1,0 +1,92 @@
+http://blog.csdn.net/feisy/article/details/17022377
+
+ 一、valgrind介绍
+
+Valgrind是一套Linux下，开放源代码（GPL V2）的仿真调试工具的集合。Valgrind由内核（core）以及基于内核的其他调试工具组成。内核类似于一个框架（framework），它模拟了一个CPU环境，并提供服务给其他工具；而其他工具则类似于插件(plug-in)，利用内核提供的服务完成各种特定的内存调试任务。Valgrind的体系结构如下图所示：
+
+Valgrind包括以下工具：
+Memcheck
+
+Memcheck 工具主要检查下面的程序错误：
+
+    使用未初始化的内存(Use of uninitialised memory)
+
+    使用已经释放了的内存(Reading/writing memory after it has been free'd)
+
+    使用超过malloc分配的内存空间(Reading/writing off the end of malloc'd blocks)
+
+    对堆栈的非法访问(Reading/writing inappropriate areas on the stack)
+
+    申请的空间是否有释放(Memory leaks – where pointers to malloc'd blocks are lost forever)
+
+    malloc/free/new/delete申请和释放内存的匹配(Mismatched use of malloc/new/new [] vs free/delete/delete [])
+
+    src和dst的重叠(Overlapping src and dst pointers in memcpy() and related functions)
+
+Callgrind
+
+Callgrind收集程序运行时的一些数据，函数调用关系等信息，还可以有选择地进行cache 模拟。在运行结束时，它会把分析数据写入一个文件。callgrind_annotate可以把这个文件的内容转化成可读的形式
+Cachegrind
+
+它模拟CPU中的一级缓存I1,D1和L2二级缓存，能够精确地指出程序中cache的丢失和命中。如果需要，它还能够为我们提供cache丢失次数，内存引用次数，以及每行代码，每个函数，每个模块，整个程序产生的指令数。这对优化程序有很大的帮助
+Helgrind
+
+它主要用来检查多线程程序中出现的竞争问题。Helgrind 寻找内存中被多个线程访问，而又没有一贯加锁的区域，这些区域往往是线程之间失去同步的地方，而且会导致难以发掘的错误。Helgrind实现了名为" Eraser" 的竞争检测算法，并做了进一步改进，减少了报告错误的次数
+Massif
+
+堆栈分析器，它能测量程序在堆栈中使用了多少内存，告诉我们堆块，堆管理块和栈的大小。Massif能帮助我们减少内存的使用，在带有虚拟内存的现代系统中，它还能够加速我们程序的运行，减少程序停留在交换区中的几率
+二、valgrind使用
+
+1. 使用选项-g编译程序，-g参数可以包含进调试信息，这样memcheck的error message中就可以包含进行号。也可以使用-O0。使用-O1性能相比-O0有较大提升，但是行号可能不准确。不推荐使用-O2。
+2. 调用valgrind：valgrind [valgrind-options] your-prog [your-prog-options]常用公共选项：
+参 数说 明默 认 设 置–tool=<name>使用名为<name>Valgrind工具[memcheck]–version显示版本信息-q –quiet只打印错误信息-v –verbose显示详细信息–trace-children=no|yes跟踪子进程[no]–track-fds=no|yes跟踪文件描述符[no]–time-stamp=no|yes添加时间戳到日志文件[no]–log-fd=<number>日志信息写入到文件描述符[2=stderr]–log-file=<file>日志信息写入到文件–log-file-exactly=<file>日志信息写入到外部文件<file>
+
+具体选项信息可以后面的附录
+3.产生valgrind日志
+针对valgrind日志可以进行针对性的分析
+三、Valgrind(memcheck)报错分类解析
+
+参考：valgrind manual
+Valgrind(memcheck)包含这7类错误(高亮部分)，黑体为一般的错误提示：
+1.illegal read/illegal write errors
+Invalid read of size 4
+2.use of uninitialised values
+Conditional jump or move depends on uninitialised value(s)
+3.use of uninitialised or unaddressable values in system calls
+Syscall param write(buf) points to uninitialised byte(s)
+4.illegal frees
+Invalid free()
+5.when a heap block is freed with an inappropriate deallocation function
+Mismatched free() / delete / delete []
+6.overlapping source and destination blocks
+Source and destination overlap in memcpy(0xbffff294, 0xbffff280, 21)
+7.memory leak detection
+7.1 Still reachable (cover case 1,2)
+A start-pointer or chain of start-pointers to the block is found.memcheck won’t report unless –show-reachable=yes is specified
+内存指针还在还有机会使用或者释放，指针指向的动态内存还没有被释放就退出了
+7.2 Definitely lost (cover case 3)
+no pointer to the block can be found memcheck won't report such blocks individually unless –show-reachable=yes is specified
+确定的内存泄露，已经不能够访问这块内存
+7.3 Indirectly lost (cover case 4,9)
+the block is lost, not because there are no pointers to it, but rather because all the blocks that point to it are themselves lost
+指向该内存的指针都位于内存泄露处
+7.4 Possibly lost (cover case 5,6,7,8)
+a chain of one or more pointers to the block has been found, but at least one of the pointers is an interior-pointer
+可能的内存泄露，仍然存在某个指针能够访问某快内存，但该指针指向的已经不是该内存首位置
+There are two ways a block can be reached. The first is with a "start-pointer", i.e. a pointer to the start of the block. The second is with an "interior-pointer", i.e. a pointer to the middle of the block. There are three ways we know of that an interior-pointer can occur:
+
+    The pointer might have originally been a start-pointer and have been moved along deliberately (or not deliberately) by the program.
+
+    It might be a random junk value in memory, entirely unrelated, just a coincidence.
+
+    It might be a pointer to an array of C++ objects (which possess destructors) allocated with new[]. In this case, some compilers store a "magic cookie" containing the array length at the start of the allocated block, and return a pointer to just past that magic cookie, i.e. an interior-pointer.
+
+四、Valgrind原理简介(这部分大家根据兴趣了解)
+
+参考：
+
+    Ibm developerworks
+
+    valgrind manual 
+
+Memcheck检测内存问题的原理如下图所示：
