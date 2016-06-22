@@ -1,0 +1,2 @@
+http://blog.chinaunix.net/uid-24922718-id-3686257.html   TS文件格式详解
+http://blog.csdn.net/occupy8/article/details/43115765    ts文件格式解析
