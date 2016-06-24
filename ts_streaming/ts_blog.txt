@@ -2,3 +2,5 @@ http://blog.chinaunix.net/uid-24922718-id-3686257.html   TS文件格式详解
 http://blog.csdn.net/occupy8/article/details/43115765    ts文件格式解析 http://www.cnblogs.com/jukan/p/5290239.html
 http://blog.csdn.net/zxh821112/article/details/8970592   TS流概述, 讲到了 ts流的生成过程
 http://blog.csdn.net/zxh821112/article/details/17587215  TS流分析, 讲到了 ts流的生成过程,以及与ps流的区别
+http://blog.csdn.net/rongdeguoqian/article/details/18214627  从TS流到PAT和PMT 
+http://blog.sina.com.cn/s/blog_521f897901015k84.html TS流之PMT结构
