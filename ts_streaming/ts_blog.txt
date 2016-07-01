@@ -1,3 +1,7 @@
+http://blog.csdn.net/godspirits/article/details/5653381 TS流的解码过程-ES-PES-DTS-PTS-PCR 
+6. 拼接好的PES包的包头会有 PTS，DTS信息，去掉PES的header就是 ES。 
+7. 直接将 被拔掉 PES包头的ES包送给decoder就可以进行解码。解码出来的数据就是一帧一帧的视频数据，这些数据至少应当与PES中的PTS关联一下，以便进行视音频同步。
+8. I，B，B，P 信息是在ES中的。 
 http://blog.chinaunix.net/uid-24922718-id-3686257.html   TS文件格式详解 
 http://blog.csdn.net/occupy8/article/details/43115765    ts文件格式解析 http://www.cnblogs.com/jukan/p/5290239.html
 http://blog.csdn.net/zxh821112/article/details/8970592   TS流概述, 讲到了 ts流的生成过程
@@ -5,3 +9,10 @@ http://blog.csdn.net/zxh821112/article/details/17587215  TS流分析, 讲到了 
 http://blog.csdn.net/rongdeguoqian/article/details/18214627  从TS流到PAT和PMT 
 http://blog.sina.com.cn/s/blog_521f897901015k84.html TS流之PMT结构
 http://blog.csdn.net/yangzhiloveyou/article/details/9076553 VOD学习之TS详解，提到了PAT包 每个TS流一个，每隔0.5秒重复
+http://www.cnblogs.com/qingquan/archive/2011/07/27/2118967.html I,P，B帧和PTS，DTS的关系， 提到了MPEG GOP
+Presentation Time Stamp。PTS主要用于度量解码后的视频帧什么时候被显示出来 
+DTS：Decode Time Stamp。DTS主要是标识读入内存中的ｂｉｔ流在什么时候开始送入解码器中进行解码。 
+http://blog.sina.com.cn/s/blog_520811730101mvap.html 回顾：让人崩溃的GOP（上）——MPEG-1/2/H.264 AVC
+http://blog.csdn.net/godspirits/article/details/7050606  TS流中 I,B,P帧的信息获取 
+H264的IPB帧判断，要先解出来H264的es流数据，然后分析出每一个NAL，再解析出那些Nal为一个Frame，再解析Slice类型，根据Slice类型就可以判断这个Frame的IPB类型。
+-->这说明ts流判断I帧，根据I,B,P帧的重要性来重传是比较麻烦的事情，也许不是一个很好的方向
