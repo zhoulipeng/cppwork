@@ -1,0 +1,134 @@
+**************************************************************************************
+    socket 缓冲区对网络编程的影响
+**************************************************************************************
+
+
+一、熟悉网络编程的都知道设置通过下列函数来设置udp 或 tcp的socket缓冲区大小
+代码：
+getsockopt(m_filefd, SOL_SOCKET, SO_RCVBUF, (void *)&get_len, &get_len_size);
+printf("get_len = %d\n", get_len);
+nrecvlen = 20*1024*1024
+setsockopt(m_filefd, SOL_SOCKET, SO_RCVBUF, (const char *)&nrecvlen, sizeof(int));
+getsockopt(m_filefd, SOL_SOCKET, SO_RCVBUF, (void *)&get_len, &get_len_size);
+printf("get_len = %d\n", get_len);
+
+输出结果:
+get_len = 124928
+get_len = 249856
+
+但是系统有默认的缓冲区大小, 系统对默认缓冲区，以及最大可设置的缓冲区都有约束，因此使用
+setsockopt 来设置接收或发送缓冲区，可能与预期不符， 不要惊讶。
+查看系统缓冲区，可以通过 sysctl命令或者 /proc/sys 下面的内存印象文件来查看系统缓冲参数
+根据测试代码查找内容
+sysctl -a |grep 124928 命令结果
+net.core.wmem_max = 124928  // 根据参考资料， 这个值是最大可设置值的一半
+net.core.rmem_max = 124928
+net.core.wmem_default = 124928 // udp 默认缓冲区大小
+net.core.rmem_default = 124928
+sysctl -a |grep 249846 结果为空
+
+
+上面这些参数可能与下列udp相关的参数混淆
+[root@localhost net]# sysctl -a |grep udp
+net.netfilter.nf_conntrack_udp_timeout = 30
+net.netfilter.nf_conntrack_udp_timeout_stream = 180
+net.ipv4.udp_mem = 172704	230272	345408
+net.ipv4.udp_rmem_min = 4096
+net.ipv4.udp_wmem_min = 4096  
+
+vi /etc/sysctl.conf
+增加或修改 net.ipv4.udp_mem项
+net.ipv4.udp_mem = min pressure max
+再设一下 net.ipv4.udp_rmem_min
+具体含义man udp 查看
+完成后执行 sysctl -p 生效 
+
+
+二、tcp缓冲区大小的设置也存在类似的情况
+//TODO
+
+参考资料：http://zhidao.baidu.com/link?url=ZVvvyx9JGw1B67grpedlWc39PAOhhn_JavsLfYIcSNLQQ-8YPm_YeVuDV1Y72k-N5-36VtOCrTp_lYW_oU6BF7MPSzifLo1uD69q05aFmDK
+1. tcp 收发缓冲区默认值
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/ipv4/tcp_rmem 
+
+4096    87380   4161536
+
+87380  ：tcp接收缓冲区的默认值
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/ipv4/tcp_wmem
+
+4096    16384   4161536
+
+16384  ： tcp 发送缓冲区的默认值
+
+2. tcp 或udp收发缓冲区最大值
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/core/rmem_max
+
+131071
+
+131071：tcp 或 udp 接收缓冲区最大可设置值的一半。
+
+也就是说调用 setsockopt(s, SOL_SOCKET, SO_RCVBUF, &rcv_size, &optlen);  时rcv_size 如果超过 131071，那么
+
+getsockopt(s, SOL_SOCKET, SO_RCVBUF, &rcv_size, &optlen); 去到的值就等于 131071 * 2 = 262142
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/core/wmem_max 
+
+131071
+
+131071：tcp 或 udp 发送缓冲区最大可设置值得一半。
+
+跟上面同一个道理
+
+3. udp收发缓冲区默认值
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/core/rmem_default  
+
+111616：udp接收缓冲区的默认值
+
+[root@ www.linuxidc.com]# cat /proc/sys/net/core/wmem_default
+
+111616
+
+111616：udp发送缓冲区的默认值
+
+4. tcp 或udp收发缓冲区最小值
+
+tcp 或udp接收缓冲区的最小值为 256 bytes，由内核的宏决定；
+
+tcp 或udp发送缓冲区的最小值为 2048 bytes，由内核的宏决定
+
+
+
+参考资料2
+
+http://www.cppblog.com/tx7do/archive/2012/09/25/191901.html
+http://www.cnweblog.com/fly2700/archive/2011/09/19/317825.html
+ udp丢包 又是udp丢包
+
+原创
+什么会导致udp丢包呢，我这里列举了如下几点原因：
+
+1.调用recv方法接收端收到数据后，处理数据花了一些时间，处理完后再次调用recv方法，在这二次调用间隔里,发过来的包可能丢失。对于这种情况可以修改接收端，将包接收后存入一个缓冲区，然后迅速返回继续recv。
+2.发送的包巨大丢包。虽然send方法会帮你做大包切割成小包发送的事情，但包太大也不行。例如超过30K的一个udp包，不切割直接通过send方法发送也会导致这个包丢失。这种情况需要切割成小包再逐个send。
+3.发送的包较大，超过mtu size数倍，几个大的udp包可能会超过接收者的缓冲，导致丢包。这种情况可以设置socket接收缓冲。以前遇到过这种问题，我把接收缓冲设置成64K就解决了。
+int nRecvBuf=32*1024;//设置为32K
+setsockopt(s,SOL_SOCKET,SO_RCVBUF,(const char*)&nRecvBuf,sizeof(int));
+4.发送的包频率太快，虽然每个包的大小都小于mtu size 但是频率太快，例如40多个mut size的包连续发送中间不sleep，也有可能导致丢包。这种情况也有时可以通过设置socket接收缓冲解决，但有时解决不了。
+5.发送的广播包或组播包在windws和linux下都接收正常，而arm上接收出现丢包。这个还不好解决，我的解决方法是大包切割成大小为1448的小包发送，每个包之间sleep 1毫秒，虽然笨，但有效。我这里mtu size为1500字节，减去udp包头8个字节，减去传输层几十个字节，实际数据位1448字节。
+除此之外还可以试试设置arm操作系统缓冲：
+//设置mtu size 1500最大
+ifconfig eth0 mtu 1500
+//查看接收缓冲最大和默认大小。
+sysctl -A | grep rmem
+//设置接收缓冲的最大大小
+sysctl -w net.core.rmem_max=1048576
+sysctl -w net.core.rmem_default=1048576
+sysctl -w net.ipv4.udp_mem=1048576
+sysctl -w net.ipv4.udp_rmem_min=1048576
+6,局域网内不丢包，公网上丢包。这个问题我也是通过切割小包并sleep发送解决的。如果流量太大，这个办法也不灵了。
+
+总之udp丢包总是会有的，如果出现了用我的方法解决不了，还有这个几个方法： 要么减小流量，要么换tcp协议传输，要么做丢包重传的工作。
+
