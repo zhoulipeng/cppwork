@@ -28,13 +28,13 @@ net.core.rmem_default = 124928
 sysctl -a |grep 249846 结果为空
 
 
-上面这些参数可能与下列udp相关的参数混淆
+上面这些参数可能与下列udp相关的参数混淆， 这些参数 
 [root@localhost net]# sysctl -a |grep udp
 net.netfilter.nf_conntrack_udp_timeout = 30
 net.netfilter.nf_conntrack_udp_timeout_stream = 180
 net.ipv4.udp_mem = 172704	230272	345408
-net.ipv4.udp_rmem_min = 4096
-net.ipv4.udp_wmem_min = 4096  
+net.ipv4.udp_rmem_min = 4096  //integer; default value: PAGE_SIZE; since Linux 2.6.25
+net.ipv4.udp_wmem_min = 4096  //linux PAGE SIZE 是个什么鬼呢
 
 vi /etc/sysctl.conf
 增加或修改 net.ipv4.udp_mem项
@@ -42,12 +42,14 @@ net.ipv4.udp_mem = min pressure max
 再设一下 net.ipv4.udp_rmem_min
 具体含义man udp 查看
 完成后执行 sysctl -p 生效 
-
+man udp 发现一句话, net.ipv4.udp_mem 的三个值是系统启动时根据可用内存计算出来的
+Defaults values for these three items are calculated at boot time from the amount of available memory.
 
 二、tcp缓冲区大小的设置也存在类似的情况
 //TODO
 
-参考资料：http://zhidao.baidu.com/link?url=ZVvvyx9JGw1B67grpedlWc39PAOhhn_JavsLfYIcSNLQQ-8YPm_YeVuDV1Y72k-N5-36VtOCrTp_lYW_oU6BF7MPSzifLo1uD69q05aFmDK
+******************************************************************************************************************************************************
+参考资料1：http://zhidao.baidu.com/link?url=ZVvvyx9JGw1B67grpedlWc39PAOhhn_JavsLfYIcSNLQQ-8YPm_YeVuDV1Y72k-N5-36VtOCrTp_lYW_oU6BF7MPSzifLo1uD69q05aFmDK
 1. tcp 收发缓冲区默认值
 
 [root@ www.linuxidc.com]# cat /proc/sys/net/ipv4/tcp_rmem 
@@ -132,3 +134,66 @@ sysctl -w net.ipv4.udp_rmem_min=1048576
 
 总之udp丢包总是会有的，如果出现了用我的方法解决不了，还有这个几个方法： 要么减小流量，要么换tcp协议传输，要么做丢包重传的工作。
 
+*****************************************************************************************************************
+
+参考资料3 
+http://blog.csdn.net/hi_software/article/details/23586101  局域网UDP丢包优化 
+
+之前一直没考虑清楚为何接收到UDP数据丢包的问题,当意识到这造成很大问题时便狂查资料，有以下结论:
+
+1.发送方发送的数据太快，导致UDP输入队列溢出(系统会丢掉一些包),在应用程序看来是即是丢包。
+
+解决方法:
+
+1.想办法提高应用程序对UDP包的处理速度。
+
+2.提高UDP输入队列缓冲区大小，可通过setsockopt的SO_RCVBUF来进行设置，但是这里的设置还受限于系统的设置，
+
+在linux系统下可以通过设置系统最大缓冲区来设定:
+
+        在 /etc/sysctl.conf 中加入
+
+net.core.rmem_max = 131071 //最大值,有资料说甚至可以设置为10M或更大
+
+net.core.rmem_default = 112640//默认值
+
+
+设置后重启可通过:sysctl -a |grep net.core 查看
+
+论证例子:
+
+题: buf = x; 接收速度,奇数秒:y byte/s。偶数秒:0byte/s;处理速度:z byte/s;问buf 多久会满?
+
+解: (1).当x<=y-z时,第一秒就会满。
+
+(2)当x>y-z时，x = (y/2 - z)*t.得出t = (2*x)/(y-2*z).
+
+2.1 当 y < 2*z时，t无大于0的解。(即buf永远不会满)
+
+2.2 当y>2*z时, t =
+(2*x)/(y-2*z).
+
+若要使buf永远不满:
+
+(1)的解决办法为，增大x,z。减小y.
+
+(2.2)的解决办法是减小y，还有增大z。
+
+无论如何，最终要使数据满足2.1的情况。 
+
+由此得出结论，首先满足基本条件即不可以让第一次发送的高峰期就将缓冲区填满，降低发送方的发送速度，加快处理速度均会使缓冲区达到不满的状态。
+
+一个线程接收，一个线程处理并不会提高处理速度，只是变相的增大了缓冲区大小，将系统缓冲区转移到了自己的缓冲区。
+
+2.当然最愚蠢的错误就是将recvfrom中的buf_size设置小了。
+
+3.局域网里丢包率也是很小的，并且未经过路由器，不会乱序，如果在到达网卡之前就丢包了，那就要检查网络状况，当然也可以通过ethtool设置网卡信息提高接收成功率。网上还有提到NAPI可以提高网卡处理效率，通过使用轮询降低中断次数。
+
+
+参考资料:
+
+TCP/IP详解(协议卷)
+
+linux性能调优
+
+http://www.stamhe.com/?p=270
