@@ -16,3 +16,10 @@ http://blog.sina.com.cn/s/blog_520811730101mvap.html 回顾：让人崩溃的GOP
 http://blog.csdn.net/godspirits/article/details/7050606  TS流中 I,B,P帧的信息获取 
 H264的IPB帧判断，要先解出来H264的es流数据，然后分析出每一个NAL，再解析出那些Nal为一个Frame，再解析Slice类型，根据Slice类型就可以判断这个Frame的IPB类型。
 -->这说明ts流判断I帧，根据I,B,P帧的重要性来重传是比较麻烦的事情，也许不是一个很好的方向
+
+*******************************************************************************
+                     mpeg ts流解析分析
+*******************************************************************************
+ http://blog.csdn.net/funkri/article/details/8444022 ffmpeg中MPEG2 TS 流解码的流程分析 
+ http://blog.csdn.net/funkri/article/details/8444042  在哪个字段有判断I,B,P帧的信息 有各种视频关键帧的判断方法，h264要解码到es
+ http://biancheng.dnbcw.info/linux/442680.html FFmpeg对mpeg2-TS解析的最详细分析
