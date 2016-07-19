@@ -169,3 +169,7 @@ cf5f306 HEAD@{7}: commit: 增加filelog目录， 存放自己写的文件日志�
 6964388 HEAD@{10}: clone: from https://github.com/zhoulipeng/cppwork.git
 zhoulp@zhoulp-desktop:/data2/workshop/github/cppwork$ git reset --hard 92ce730
 
+分支管理
+1、下载分支
+git clone -b 1.0release https://github.com/zhoulipeng/srs.git
+
