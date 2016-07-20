@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 /*
 所有的转义字符和所对应的意义：
 转义字符	意义	ASCII码值（十进制）
@@ -17,6 +18,10 @@
 \xhh		1到2位十六进制所代表的任意字符		二位十六进制
 二、%#x和%x的区别
 三、 打印指针%p
+四、 实现类似github下载 刷新打印百分比，但不换行，需要使用 \r 与fflush 
+函数配合使用, 因为linux控制台使用行缓冲策略，\n会触发行缓冲实践显示到屏幕
+因此\r 需要与fflush配合使用
+Rceiving objects:  12% (3867/31189), 40.64 MiB | 41 KiB/s
 */
 int main(int argc, char *argv[])
 {
@@ -24,4 +29,14 @@ int main(int argc, char *argv[])
 	printf("char is %%c\t\t:value=%c\n", '\a');
 	long unsigned int lu = 999999999;
 	printf("long unsigned int %%lu: value=%lu\n", lu);
+	int percent = 0;
+	do{
+		printf("Rceiving %d%%\r", percent);
+		//fprintf(stdout, "decode one audio frame!\b\r");
+		fflush(stdout);
+		percent++;
+		sleep(1);
+	}while(percent < 100);
+	const int NUM  = 50;//任务完成总量  
+      
 }
