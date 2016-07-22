@@ -1,0 +1,74 @@
+http://blog.csdn.net/tao_627/article/details/50448924  在CentOS 6.6 64bit上升级GCC到4.8.2版本 
+
+操作系统CentOS6.6 64bit上gcc原版本4.4.7，不能支持C++11的特性~，为了便于YouCompleteMe插件，我希望升级到4.8.2。不能通过yum的方法升级，需要自己手动下载安装包并编译，下面假定都是以root用户安装。
+
+一、升级过程
+1.获取gcc安装包并解压
+
+gcc官网http://ftp.gnu.org/gnu/gcc里面有所有的gcc版本供下载，最新版本为5.3.0
+这里我们暂保守选择安装gcc 4.8.2
+wget http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.gz
+tar -zxvf gcc-4.8.2.tar.gz
+2.下载供编译需求的依赖项
+这个神奇的脚本文件会帮我们下载、配置、安装依赖库，可以节约我们大量的时间和精力,我们可以直接打开其源码看看。
+它会下载指定的源码包并做软连接。
+cd gcc-4.8.2　
+./contrib/download_prerequisites　
+下面需要依次从源码安装这几个依赖库
+gmp,mpfr,mpc
+
+3.建立一个目录供编译出的文件存放
+mkdir gcc-build-4.8.2
+cd gcc-build-4.8.2
+4. 生成Makefile文件
+../configure -enable-checking=release -enable-languages=c,c++ -disable-multilib
+5.编译
+make -j4
+注意：此步骤非常耗时，普通PC花费半小时不稀奇，我的高配电脑只用了10分钟左右
+6.安装
+sudo make install
+7.切换GCC到新版
+确定新安装的GCC的路径,一般默认在/usr/local/bin下。可以先updatedb,然后再输入
+
+ls /usr/local/bin | grep gcc
+
+
+查找。添加新GCC到可选项，倒数第三个是名字，倒数第二个参数为新GCC路径，最后一个参数40为优先级，设大一些之后就自动使用新版了
+update-alternatives --install /usr/bin/gcc gcc /usr/local/bin/x86_64-unknown-linux-gnu-gcc 40
+
+8.确认当前版本已经切换为新版
+gcc -v
+g++ -v
+注意需要重新打开终端才能生效。
+二、验证安装
+尝试写一个C++11特性的程序段 tryCpp11.cc，使用了shared_ptr
+//tryCpp11.cc
+#include <iostream>
+#include <memory>
+int main()
+{
+    std::shared_ptr<int> pInt(new int(5));
+    std::cout << *pInt << std::endl;
+    return 0;
+}
+ 
+验证文件：
+g++ -std=c++11 -o tryCpp11 tryCpp11.cc
+./tryCpp11
+
+三、安装中遇到的问题澄清
+1.是否需要手动安装依赖库？
+不需要，程序会内部自动处理，手动安装反而后出错。
+2.安装动态库后，是否需要更新动态库？
+更不需要修改并更新/etc/ld.so.conf文件之类的
+3.如果编译错误，不要make distclean之类的，直接重新解压源码再来一遍
+4.编译过程中出现错误
+configure: error: cannot compute suffix of object files: cannot compile
+这是找不到依赖库的位置
+
+四、参考文献
+[1].http://www.linuxidc.com/Linux/2015-01/112595.htm   4.8.3版本
+[2].http://blog.csdn.net/szq123456123/article/details/45170923   4.9.2版本
+[3].http://www.mamicode.com/info-detail-550954.html  对排错很有参考
+[4].http://www.cnblogs.com/peterpanzsy/archive/2013/04/10/3006838.html 对排错很有帮助，推荐 
+
