@@ -22,9 +22,15 @@
 函数配合使用, 因为linux控制台使用行缓冲策略，\n会触发行缓冲实践显示到屏幕
 因此\r 需要与fflush配合使用
 Rceiving objects:  12% (3867/31189), 40.64 MiB | 41 KiB/s
+五、为什么char 与 unsigned char变量 char x = 0xff; unsigned char y = 0xff;
+用 %02hx 打印的结果会不同
 */
 int main(int argc, char *argv[])
 {
+    char x = 0xff;
+    unsigned char y = 0xff;
+    printf("x = %02hx, %02hx\n", x, y);
+    printf("x = %02hx, %02hx\n", x & 0xff, y);
 	char c = '\a'; // ring char
 	printf("char is %%c\t\t:value=%c\n", '\a');
 	long unsigned int lu = 999999999;
