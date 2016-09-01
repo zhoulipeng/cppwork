@@ -24,6 +24,9 @@
 Rceiving objects:  12% (3867/31189), 40.64 MiB | 41 KiB/s
 五、为什么char 与 unsigned char变量 char x = 0xff; unsigned char y = 0xff;
 用 %02hx 打印的结果会不同
+六、刘永刚在群里发的问题，待测试
+ snprintf  %lld 格式化int64_t  好坑爹。 编译一点没问题，运行时超过4字节大小的，格式结果变为负数 越界了。
+ 正确姿势 %I64d
 */
 int main(int argc, char *argv[])
 {
