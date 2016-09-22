@@ -27,6 +27,27 @@ Rceiving objects:  12% (3867/31189), 40.64 MiB | 41 KiB/s
 六、刘永刚在群里发的问题，待测试
  snprintf  %lld 格式化int64_t  好坑爹。 编译一点没问题，运行时超过4字节大小的，格式结果变为负数 越界了。
  正确姿势 %I64d
+七、
+http://blog.csdn.net/yanlin1989812/article/details/22063669 
+#if defined(_MSC_VER)  
+    #define JL_SIZE_T_SPECIFIER "%Iu"  
+    #define JL_SSIZE_T_SPECIFIER "%Id"  
+    #define JL_PTRDIFF_T_SPECIFIER "%Id"  
+#elif defined(__GNUC__)  
+    #define JL_SIZE_T_SPECIFIER "%zu"  
+    #define JL_SSIZE_T_SPECIFIER "%zd"  
+    #define JL_PTRDIFF_T_SPECIFIER "%zd"  
+#else // TODO figure out which to use.  
+    #if NUMBITS == 32  
+        #define JL_SIZE_T_SPECIFIER something_unsigned  
+        #define JL_SSIZE_T_SPECIFIER something_signed  
+        #define JL_PTRDIFF_T_SPECIFIER something_signed  
+    #else  
+        #define JL_SIZE_T_SPECIFIER something_bigger_unsigned  
+        #define JL_SSIZE_T_SPECIFIER something_bigger_signed  
+        #define JL_PTRDIFF_T_SPECIFIER something-bigger_signed  
+    #endif  
+#endif  
 */
 int main(int argc, char *argv[])
 {
