@@ -25,3 +25,6 @@ size是8。这个是用于将代码做"c-beauty-selection"的时候用的。
 
 http://blog.csdn.net/keensword007/article/details/5411306
 ********************************************************************************
+不推荐使用slickedit的地方，之slickedit 2012 缺点
+1、连接库按照文件名排序连接 lib/lib_acl.a lib/lib_acl_cpp.a ,
+    但是这样会出现链接库依赖错误
