@@ -12,3 +12,7 @@ netstat -ant | grep "LISTEN"
 # 比如一般用户看不到root进程监听端口的程序名
 netstat -nltp|grep 8081
 ############### udp ########################
+
+#查看当前系统的连接数
+netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+
