@@ -52,12 +52,14 @@ int main(int argc, char *argv[])
         sleep(1);
         //recv(int sockfd, void *buf, size_t len, int flags);
         //char buf = 0;
+        //recv 0 个字节的方法 不靠谱，区分不了clnt_sock 收到数据与收到close 请求FIN/ACK
+        //因此用recv函数来判定，recv 第三个参数必须要 > 0,如果这时候返回0 说明，客户端调用close 了
         //z = recv(clnt_sock, &buf, 0, 0);
         
 	//fprintf(stderr, "getsock opt return %d, error = %d, errno = %d\n", z, buf, errno);
 	// 这种方法在srs 中有时能检测出close wait， 有时检测不出来，
 	// 但是在本程序中一次也没检测出来
-        z = getsockopt(clnt_sock, SOL_SOCKET, SO_ERROR, &error, &len);
+        z = getsockopt(clnt_sock, SOL_SOCKET, SO_ERROR, (char *)&error, &len);
         fprintf(stderr, "getsock opt return %d, error = %d, errno = %d, len = %d\n", z, error, errno, len);
         
     }while(1);
