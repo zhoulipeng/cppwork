@@ -6,4 +6,5 @@
 # 但是tcpdump的命令经常记忆不熟， 现将tcpdump的一些用法记录， 以备查阅与练习
 tcpdump host 192.168.100.146    #根据ip抓包
 tcpdump ip dst 192.168.100.146  #根据目的IP抓包
-
+#服务器抓某个客户端的包host填客户端的公网IP，并切割抓包文件
+tcpdump -i eth2 tcp and port 8035 and host 115.44.187.74 -w 0318.cap -C 100m -Z root
