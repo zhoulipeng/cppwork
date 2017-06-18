@@ -1,0 +1,11 @@
+ubuntu上测试火焰图首先要安装内核调试信息
+https://wiki.ubuntu.com/Kernel/Systemtap
+https://wiki.ubuntu.com/Kernel/Debugging
+http://blog.chinaunix.net/uid-24774106-id-3404192.html
+http://www.domaigne.com/download/tools/get-dbgsym
+1. 
+wget http://www.domaigne.com/download/tools/get-dbgsym 
+2. 
+./get-dbgsum
+由于该脚本的下载文件较大，修改/etc/wgetrc 配置一个高速代理
+3. apt install -y systemtap gcc
