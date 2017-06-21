@@ -234,3 +234,4 @@ warning: push.default 尚未设置，它的默认值在 Git 2.0 已从 'matching
     参见 'git help config' 并查找 'push.default' 以获取更多信息。
     （'simple' 模式由 Git 1.7.11 版本引入。如果您有时要使用老版本的 Git，
     为保持兼容，请用 'current' 代替 'simple'）
+test
