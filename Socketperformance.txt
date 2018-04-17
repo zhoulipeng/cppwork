@@ -1,0 +1,20 @@
+
+#https://stackoverflow.com/questions/14973942/tcp-loopback-connection-vs-unix-domain-socket-performance
+
+This benchmark: https://github.com/rigtorp/ipc-bench provides latency and throughput tests for TCP sockets, Unix Domain Sockets (UDS), and PIPEs.
+
+Here you have the results on a single CPU 3.3GHz Linux machine :
+
+TCP average latency: 6 us
+
+UDS average latency: 2 us
+
+PIPE average latency: 2 us
+
+TCP average throughput: 253702 msg/s
+
+UDS average throughput: 1733874 msg/s
+
+PIPE average throughput: 1682796 msg/s
+
+66% latency reduction and almost 7X more throughput explain why most performance-critical software has their own IPC custom protocol.
