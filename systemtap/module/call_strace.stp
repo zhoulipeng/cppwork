@@ -1,0 +1,16 @@
+#!/usr/bin/stap
+# http://freemandealer.github.io/2015/04/13/systemtap/
+# 拷贝 模块到　"/lib/modules/uname -r" 
+# cd /lib/modules/4.10.0-42-generic
+# cp kernel/net/ipv4/tcp_bbr.ko ./
+
+
+probe module("tcp_bbr").function("*").call {
+            printf("%s -> %s\n", thread_indent(1), probefunc())
+}
+probe module("tcp_bbr").function("*").return {
+            printf("%s -> %s\n", thread_indent(-1), probefunc());
+}
+# http://nanxiao.me/systemtap-note-2-function-probe/
+# kernel指的是kernle image文件（vmlinux），而module则指“/lib/modules/uname
+# -r”下的模块，即ko文件。
