@@ -89,6 +89,8 @@ set undodir=~/.undodir
 " 设置NerdTree
 map <F3> :NERDTreeMirror<CR>
 map <F3> :NERDTreeToggle<CR>
+" quick compile 
+map <F4> :!make<CR>
 
 " 自动存盘 5s 
 set updatetime=3000
