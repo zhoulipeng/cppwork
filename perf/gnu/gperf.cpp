@@ -11,6 +11,10 @@ int main(int argc, char* argv[])
     cout << cmdLineOption <<std::endl;
     const CommandOption* option = Perfect_Hash::IsValidCommandLineOption(cmdLineOption.c_str(),
         cmdLineOption.length());
+    if (option == NULL){
+        cout << "invalid option" << endl;
+    }
+    cout << "switch" << endl;
     switch (option->OptionCode) {
     case CommandOptionCode::HELPVERBOSE:
         cout << "Application specific detailed help goes here" << endl;

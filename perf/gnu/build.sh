@@ -3,6 +3,7 @@ gperf -CGD -N IsValidCommandLineOption -K Option -L C++ -t command_options.gperf
 g++ gperf.cpp -o gperf.exe
 ./gperf.exe +nolog
 ./gperf.exe +helpverbose
+./gperf.exe +invalid
 g++ command_line.cpp -o cmd.exe
 ./cmd.exe +nolog
 ./cmd.exe +helpverbose
