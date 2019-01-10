@@ -1,3 +1,5 @@
+#include <linux/limits.h>
+#include "gperftools/heap-profiler.h"
 #include "aes_file.h"
 
 // Note: This isn't a good way to encrypt large file (anything that can't be read into
@@ -9,16 +11,28 @@ int main(int argc, char **argv) {
     fprintf(stderr, "No file argument supplied.\n");
     return 1;
   }
-
+  // If you don't use gperftools heapprofiling, please comment next line
+  HeapProfilerStart("main");
   Crypto();
 
-  char *encryptedFilename = encryptFile(argv[1]);
-  decryptFile(argv[1], encryptedFilename);
+  char encryptedFilename[NAME_MAX] = { 0 };
+  // Append .enc to the filename
+  strcpy(encryptedFilename, argv[1]);
+  strcat(encryptedFilename, ".enc");
+  encryptFile(argv[1], encryptedFilename);
+  // Append .dec to the filename
+  char decryptedFilename[NAME_MAX] = { 0 };
+  strcpy(decryptedFilename, argv[1]);
+  strcat(decryptedFilename, ".dec");
+  decryptFile(encryptedFilename, decryptedFilename);
+  freeCrypto();
+  // If you don't use gperftools heapprofiling, please comment next line
+  HeapProfilerStop();
 
   return 0;
 }
 
-char* encryptFile(char *filename) {
+int encryptFile(char *filename, char *encryptedFilename) {
   // Read the file to encrypt
   unsigned char *file;
   size_t fileLength = readFile(filename, &file);
@@ -34,41 +48,18 @@ char* encryptFile(char *filename) {
   }
   printf("%d bytes encrypted\n", encryptedFileLength);
 
-  // Append .enc to the filename
-  char *encryptedFilename = appendToString(filename, (char*)".enc");
-
-  #ifdef CONVERT_TO_BASE64
-    // Encode the encrypted file to base64
-    char *base64Buffer = base64Encode(encryptedFile, encryptedFileLength);
-
-    // Change the encrypted file pointer to the base64 string and update the length
-    free(encryptedFile);
-    encryptedFile = (unsigned char*)base64Buffer;
-    encryptedFileLength = strlen((char*)encryptedFile);
-  #endif
-
   // Write the encrypted file to its own file
   writeFile(encryptedFilename, encryptedFile, encryptedFileLength);
   printf("Encrypted file written to \"%s\"\n", encryptedFilename);
 
   free(file);
-  return encryptedFilename;
+  return 0;
 }
 
-void decryptFile(char *filename, char *encryptedFilename) {
+void decryptFile(char *encryptedFilename, char *decryptedFilename) {
   // Read the encrypted file back
   unsigned char *file;
   size_t fileLength = readFile(encryptedFilename, &file);
-
-  #ifdef CONVERT_TO_BASE64
-    // Decode the encrypted file from base64
-    unsigned char *binaryBuffer;
-    fileLength = base64Decode((char*)file, fileLength, &binaryBuffer);
-
-    // Change the pointer of the string containing the file info to the decoded base64 string
-    free(file);
-    file = binaryBuffer;
-  #endif
 
   // Decrypt the encrypted file
   unsigned char *decryptedFile;
@@ -80,15 +71,11 @@ void decryptFile(char *filename, char *encryptedFilename) {
   }
   printf("%d bytes decrypted\n", (int)decryptedFileLength);
 
-  // Append .dec to the filename
-  char *decryptedFilename = appendToString(filename, (char*)".dec");
-
   // Write the decrypted file to its own file
   writeFile(decryptedFilename, decryptedFile, decryptedFileLength);
   printf("Decrypted file written to \"%s\"\n", decryptedFilename);
 
   free(decryptedFile);
-  free(decryptedFilename);
   free(file);
 }
 
@@ -141,14 +128,3 @@ int readFile(char *filename, unsigned char **file) {
   return fileLength;
 }
 
-char* appendToString(char *string, char *suffix) {
-  char *appenedString = (char*)malloc(strlen(string) + strlen(suffix) + 1);
-
-  if(appenedString == NULL) {
-    fprintf(stderr, "Failed to allocate memory\n");
-    exit(1);
-  }
-
-  sprintf(appenedString, "%s%s", string, suffix);
-  return appenedString;
-}

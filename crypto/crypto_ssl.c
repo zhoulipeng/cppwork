@@ -35,7 +35,9 @@ void CryptoParam(unsigned char *remotePublicKey, size_t remotePublicKeyLength) {
 }
 
 void freeCrypto() {
+  #ifdef PSEUDO_CLIENT
   EVP_PKEY_free(remotePublicKey);
+  #endif
 
   EVP_CIPHER_CTX_free(rsaEncryptContext);
   EVP_CIPHER_CTX_free(aesEncryptContext);
