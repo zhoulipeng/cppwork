@@ -1,5 +1,5 @@
 #include <linux/limits.h>
-#include "gperftools/heap-profiler.h"
+//#include "gperftools/heap-profiler.h"
 #include "aes_file.h"
 
 // Note: This isn't a good way to encrypt large file (anything that can't be read into
@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   // If you don't use gperftools heapprofiling, please comment next line
-  HeapProfilerStart("main");
+  //HeapProfilerStart("main");
   Crypto();
 
   char encryptedFilename[NAME_MAX] = { 0 };
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   decryptFile(encryptedFilename, decryptedFilename);
   freeCrypto();
   // If you don't use gperftools heapprofiling, please comment next line
-  HeapProfilerStop();
+  //HeapProfilerStop();
 
   return 0;
 }
@@ -52,6 +52,7 @@ int encryptFile(char *filename, char *encryptedFilename) {
   writeFile(encryptedFilename, encryptedFile, encryptedFileLength);
   printf("Encrypted file written to \"%s\"\n", encryptedFilename);
 
+  free(encryptedFile);
   free(file);
   return 0;
 }
