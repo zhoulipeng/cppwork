@@ -10,7 +10,7 @@ http://www.cnblogs.com/zhengyuhong/archive/2011/12/25/2300837.html
 using namespace std;
 
 enum COLOR { Red, Green, Blue, Yellow, White, Black, Brown } ;
-
+// 
 class Animal // common base to both Mammal and Fish
 {
 public:
@@ -19,6 +19,7 @@ public:
     virtual int GetAge() const { return itsAge; }
     virtual void SetAge(int age) { itsAge = age; }
     virtual void Sleep() const = 0;
+    // 纯虚函数的意义在于不可以实例化该类，且不用写"{}"这样无意义的东西，并且要求其某个派生类必然要实现该接口 
     virtual void Eat() const = 0;
     virtual void Reproduce() const = 0;
     virtual void Move() const = 0;
@@ -32,7 +33,19 @@ itsAge(age)
 {
     cout << "Animal constructor...\n";
 }
-
+// [c++]为什么可以在基类中实现纯虚函数
+// https://blog.csdn.net/fnzsjt/article/details/38350681
+// 在<<Effective C++>>(没有拜读过)讲明，派生类可以显式地调用基类中的纯虚函数，这样就可以将将不同子类中公共的事务放在父类中完成
+// 
+void Animal::Sleep() const
+{
+    cout << "virtual Sleep\n";
+//  比如父类有void method1(), 子类也有void method1(), 那么当对象定义为子类时,
+//  执行method1时只会执行子类的method1, 父类的method1不执行, 那么也要同时执行父类的method1怎么处理, 
+//  可以在子类代码里面显式调用"父类::method1()" . 
+//  原文：https://blog.csdn.net/rocklee/article/details/75148971 
+}
+// 继承抽象类（带有纯虚函数的类），如果不实现所有纯虚函数，也不能实例化，只能定义指针
 class Mammal : public Animal
 {
 public:
@@ -84,7 +97,8 @@ public:
       { cout << "Dog constructor...\n"; }
       virtual ~Dog() { cout << "Dog destructor...\n"; }
       virtual void Speak()const { cout << "Whoof!... \n"; }
-      virtual void Sleep() const { cout << "Dog snoring...\n"; }
+      // 如果在派生类中显式的调用基类中的纯虚函数，则基类必须实现纯虚函数接口的函数体
+      virtual void Sleep() const { cout << "Dog snoring...\n"; Animal::Sleep();}
       virtual void Eat() const { cout << "Dog eating...\n"; }
       virtual void Move() const { cout << "Dog running...\n"; }
       virtual void Reproduce() const
@@ -97,6 +111,8 @@ protected:
 int main()
 {
     Animal *pAnimal=0;
+    //Mammal obj; //不能实例化
+    Mammal *obj = nullptr;
     int choice;
     bool fQuit = false;
 
@@ -118,6 +134,8 @@ int main()
         }
         if (fQuit == false)
         {
+            pAnimal->SetAge(choice);
+            cout << pAnimal->GetAge() << endl;
             pAnimal->Speak();
             pAnimal->Eat();
             pAnimal->Reproduce();
