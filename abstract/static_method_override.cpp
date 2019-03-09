@@ -41,4 +41,5 @@ int main()
     cout << "静态数据成员可以被继承!  " << Derived::a << endl;
     // 如果没有DerivedFun 会执行Base::Fun
     Derived::Fun();
+    Base::Fun();
 }
