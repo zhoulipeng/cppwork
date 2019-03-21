@@ -8,7 +8,7 @@ struct base {
         T::bar();
     }
 };
-
+//通过模板，让父类的静态方法，调用子类的静态方法 
 struct derived : public base<derived> {
     static void bar()
     {
