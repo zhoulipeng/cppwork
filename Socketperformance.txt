@@ -18,3 +18,7 @@ UDS average throughput: 1733874 msg/s
 PIPE average throughput: 1682796 msg/s
 
 66% latency reduction and almost 7X more throughput explain why most performance-critical software has their own IPC custom protocol.
+
+# other result 
+https://github.com/detailyang/ipc_benchmark
+# https://www.programering.com/a/MTO0AzMwATI.html
