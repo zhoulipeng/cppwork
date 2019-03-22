@@ -1,4 +1,4 @@
-/* C++ code produced by gperf version 3.0.4 */
+/* C++ code produced by gperf version 3.1 */
 /* Command-line: gperf -CGD -N IsValidCommandLineOption -K Option -L C++ -t command_options.gperf  */
 /* Computed positions: -k'2' */
 
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 #line 1 "command_options.gperf"
@@ -50,13 +50,13 @@ struct CommandOption
 class Perfect_Hash
 {
 private:
-  static inline unsigned int hash (const char *str, unsigned int len);
+  static inline unsigned int hash (const char *str, size_t len);
 public:
-  static const struct CommandOption *IsValidCommandLineOption (const char *str, unsigned int len);
+  static const struct CommandOption *IsValidCommandLineOption (const char *str, size_t len);
 };
 
 inline unsigned int
-Perfect_Hash::hash (register const char *str, register unsigned int len)
+Perfect_Hash::hash (const char *str, size_t len)
 {
   static const unsigned char asso_values[] =
     {
@@ -87,7 +87,7 @@ Perfect_Hash::hash (register const char *str, register unsigned int len)
       18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
       18, 18, 18, 18, 18, 18
     };
-  return len + asso_values[(unsigned char)str[1]];
+  return len + asso_values[static_cast<unsigned char>(str[1])];
 }
 
 static const struct CommandOption wordlist[] =
@@ -111,19 +111,19 @@ static const signed char lookup[] =
   };
 
 const struct CommandOption *
-Perfect_Hash::IsValidCommandLineOption (register const char *str, register unsigned int len)
+Perfect_Hash::IsValidCommandLineOption (const char *str, size_t len)
 {
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
-          register int index = lookup[key];
+          int index = lookup[key];
 
           if (index >= 0)
             {
-              register const char *s = wordlist[index].Option;
+              const char *s = wordlist[index].Option;
 
               if (*str == *s && !strcmp (str + 1, s + 1))
                 return &wordlist[index];
