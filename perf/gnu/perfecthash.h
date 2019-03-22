@@ -1,5 +1,5 @@
-/* C code produced by gperf version 3.0.4 */
-/* Command-line: gperf -CGD -N IsValidCommandLineOption -K Option -t command_options.gperf  */
+/* C code produced by gperf version 3.1 */
+/* Command-line: gperf -CGD -N IsValidCommandLineOption -K Option -L C -t command_options.gperf  */
 /* Computed positions: -k'2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 #line 1 "command_options.gperf"
@@ -57,7 +57,7 @@ inline
 static unsigned int
 hash (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   static const unsigned char asso_values[] =
     {
@@ -94,15 +94,15 @@ hash (str, len)
 static const struct CommandOption wordlist[] =
   {
 #line 14 "command_options.gperf"
-    {"+nolog", CommandOptionCode::NOLOG},
+    {"+nolog", NOLOG},
 #line 15 "command_options.gperf"
-    {"+_64bit", CommandOptionCode::_64BIT},
+    {"+_64bit", _64BIT},
 #line 12 "command_options.gperf"
-    {"+password", CommandOptionCode::PASSWORD},
+    {"+password", PASSWORD},
 #line 13 "command_options.gperf"
-    {"+nocopyright", CommandOptionCode::NOCOPYRIGHT},
+    {"+nocopyright", NOCOPYRIGHT},
 #line 11 "command_options.gperf"
-    {"+helpverbose", CommandOptionCode::HELPVERBOSE}
+    {"+helpverbose", HELPVERBOSE}
   };
 
 static const short lookup[] =
@@ -111,22 +111,16 @@ static const short lookup[] =
     -1, -1, -1,  4
   };
 
-#ifdef __GNUC__
-__inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct CommandOption *
 IsValidCommandLineOption (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      register unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register int index = lookup[key];
 
