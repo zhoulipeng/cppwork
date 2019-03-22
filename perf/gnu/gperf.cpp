@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
         cmdLineOption.length());
     if (option == NULL){
         cout << "invalid option" << endl;
+        return -1;
     }
     cout << "switch" << endl;
     switch (option->OptionCode) {
