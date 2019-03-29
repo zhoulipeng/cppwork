@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     unsigned char y = 0xff;
     printf("x = %02hx, %02hx\n", x, y);
     printf("x = %02hx, %02hx\n", x & 0xff, y);
+    printf("x = %hhx, %hhx\n", x, y);
 	char c = '\a'; // ring char
 	printf("char is %%c\t\t:value=%c\n", '\a');
 	long unsigned int lu = 999999999;
