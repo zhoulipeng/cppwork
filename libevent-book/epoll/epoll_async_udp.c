@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 #define MAXLINE 10
 #define OPEN_MAX 100
@@ -21,14 +22,14 @@ void setnonblocking(int sock)
     if(opts<0)
     {
         perror("fcntl(sock,GETFL)");
-        exit(1);
+        _Exit(1);
     }
 
     opts = opts|O_NONBLOCK;
     if(fcntl(sock,F_SETFL,opts)<0)
     {
         perror("fcntl(sock,SETFL,opts)");
-        exit(1);
+        _Exit(1);
     }
 
 }
@@ -60,7 +61,7 @@ int main()
     ev.events=EPOLLIN|EPOLLET;
     //注册epoll事件
     ret=epoll_ctl(epfd,EPOLL_CTL_ADD,listenfd,&ev);
-    printf("epoll_ctl return %d\n",ret);
+    printf("epoll_ctl return %d, listenfd %d\n", ret, listenfd);
     bzero(&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     char *local_addr="127.0.0.1";
@@ -76,6 +77,7 @@ int main()
     {
         //等待epoll事件的发生
         nfds=epoll_wait(epfd,events,MAX_EVENT,-1);
+        printf("wait nfds %d\n", nfds);
         //处理所发生的所有事件
         for(i=0;i<nfds;++i)
         {
@@ -102,7 +104,7 @@ int main()
                 }
                 char* p = (char *)&clientaddr.sin_addr;
                 sprintf(szAddr, "%d.%d.%d.%d", *p, *(p+1), *(p+2), *(p+3));
-                printf("readline %s from ip:%s\n",line,szAddr);
+                printf("readline %s sockfd %d from ip:%s:%d\n",line, sockfd, szAddr, ntohs(clientaddr.sin_port));
                 //设置用于写操作的文件描述符
                 ev.data.fd=sockfd;
                 //设置用于注测的写操作事件
@@ -117,7 +119,7 @@ int main()
 
                 sockfd = events[i].data.fd;
                 write(sockfd, line, n);
-                printf("writeline %s\n",line);
+                printf("writeline %s sockfd %d to ip:%s:%d\n",line, sockfd, szAddr, ntohs(clientaddr.sin_port));
                 //设置用于读操作的文件描述符
                 ev.data.fd=sockfd;
                 //设置用于注测的读操作事件
