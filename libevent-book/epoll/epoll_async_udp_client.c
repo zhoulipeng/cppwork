@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 #define MAXLINE 10
 #define OPEN_MAX 100
@@ -21,14 +22,14 @@ void setnonblocking(int sock)
     if(opts<0)
     {
         perror("fcntl(sock,GETFL)");
-        exit(1);
+        _exit(1);
     }
 
     opts = opts|O_NONBLOCK;
     if(fcntl(sock,F_SETFL,opts)<0)
     {
         perror("fcntl(sock,SETFL,opts)");
-        exit(1);
+        _exit(1);
     }
 
 }
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
     int numbytes = 0;
     if ((udp_caller_sk = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
 	perror("socket");
-	exit(1);
+	_exit(1);
     }
     struct sockaddr_in caller_addr;
     memset(&caller_addr, 0x00, sizeof(caller_addr)); /* 其余部分设成0 */
@@ -50,5 +51,6 @@ int main(int argc, char *argv[])
     sprintf(buf, "hello%s", argv[1]);
     printf("%s\n", buf);
     numbytes = sendto(udp_caller_sk, buf, strlen(buf), 0, (struct sockaddr *)&caller_addr, sizeof(caller_addr));
+    printf("numbytes %d\n", numbytes);
     return 0;
 }
