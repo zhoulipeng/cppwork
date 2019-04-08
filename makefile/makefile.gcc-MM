@@ -1,0 +1,83 @@
+
+CC = gcc
+LINK = gcc
+SSLname = openssl-OpenSSL_1_1_0j
+# gcc -Wall net_disk.c -D_FILE_OFFSET_BITS=64 -I../build/include -L../build/lib/ -lfuse -pthread -lulockmgr -ldl
+# -Werror -Wshadow=error
+
+# NOTE: When compiling with programs with gcc, that you plan to link
+# with libtcmalloc, it’s safest to pass in the flags
+# -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+# 
+# when compiling. gcc makes some optimizations assuming it is using its
+# own, built-in malloc; that assumption obviously isn’t true with
+# tcmalloc. In practice, we haven’t seen any problems with this, but
+# the expected risk is highest for users who register their own malloc
+# hooks with tcmalloc (using gperftools/malloc_hook.h). The risk is
+# lowest for folks who use tcmalloc_minimal (or, of course, who pass in
+# the above flags :-) ).
+# 作者：10km 
+# 原文：https://blog.csdn.net/10km/article/details/50401005 
+
+CFLAGS = -g -fsanitize=address -fno-omit-frame-pointer -pipe -Wall -Wextra -Wshadow -D_FILE_OFFSET_BITS=64 -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -DHAVE_POSIX_FALLOCATE -DHAVE_SETXATTR
+CXXFLAGS = -g -pipe -fpermissive -Wall -Wextra -Wshadow -D_FILE_OFFSET_BITS=64 -DHAVE_POSIX_FALLOCATE -DHAVE_SETXATTR -DHAVE_UTIMENSAT
+# link libstdc++ libm for tcmalloc
+INCPATH = -I../build/include/ \
+		  -I../build/include/glib-2.0/ \
+		  -I../build/lib/glib-2.0/include \
+		  -I../build/$(SSLname)/include
+LIBS = -pthread -ldl -L../build/lib/ -L../build/lib/glib-2.0 -lfuse -lulockmgr -Wl,-rpath=../build/lib/\
+	   -ljansson -lglib-2.0 -lcurl -lz -lidn2 -ltcmalloc -lunwind -lstdc++ -lm\
+	   -lcrypto
+#	   -lssl11 -lcrypto11 -lxml2 -lz -lldap -llber -lnghttp2 -lidn2
+
+DEFS =
+BUILD = .tmp
+UNIT = unit
+
+SOURCES = $(wildcard *.c)
+$(warning $(SOURCES))
+OBJECTS = $(patsubst %.c, $(BUILD)/%.o, $(notdir $(SOURCES)))
+$(warning $(OBJECTS))
+HEADDEPS= $(patsubst %.c, $(BUILD)/%.d, $(notdir $(SOURCES)))
+$(warning $(HEADDEPS))
+TARGET = net_disk
+
+.PHONY: clean clean1
+first:all
+
+# $(BUILD)/%.o: %.c 
+#	$(CC) -c $< $(CFLAGS) $(DEFS) $(INCPATH) -o $@ 
+
+# https://www.cnblogs.com/lidabo/p/4928956.html 自动推导头文件依赖, 这个例子不应该将 %.o:%.c 的依赖还写在主makefile中
+#
+$(BUILD)/%.d: %.c
+	set -e; 
+	mkdir -p $(BUILD);
+	rm -f $@;
+	echo -n $(BUILD)/ >> $@.temp; 
+	$(CC) -MM -I../build/include -D_FILE_OFFSET_BITS=64 $< $(INCLUDEFLAGS) >> $@.temp; 
+	echo -e "	$(CC) -c $< $(CFLAGS) $(DEFS) $(INCPATH) -o ${patsubst %.d, %.o, $@} " >> $@.temp ;
+	sed 's,\($*\)$(BUILD)/\.o[ :]*,\1.o  : ,g' < $@.temp > $@; 
+#	rm -f $@.temp
+
+# echo -e "	$(CC) -c $< $(CFLAGS) $(DEFS) $(INCPATH) -o $@ " >> $@.temp ;
+# 引入.d文件， 会触发创建.d的规则, 下面两种写法都可以
+-include $(OBJECTS:.o=.d)
+# -include $(HEADDEPS)
+$(warning $(OBJECTS))
+
+all: $(BUILD) $(TARGET)
+
+$(BUILD):
+	mkdir -p $(BUILD)
+
+$(TARGET) : $(OBJECTS) 
+	$(LINK) -o $(TARGET) $(CFLAGS) $(DEFS) $(INCPATH) $(OBJECTS) $(LIBS)
+
+clean :
+	rm -rf $(OBJECTS) $(TARGET) $(BUILD) 
+
+clean1:
+	rm -rf $(BUILD)/net_disk.o
+
