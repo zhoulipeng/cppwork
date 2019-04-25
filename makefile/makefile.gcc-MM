@@ -55,7 +55,7 @@ $(BUILD)/%.d: %.c
 	set -e; 
 	mkdir -p $(BUILD);
 	rm -f $@;
-	echo -n $(BUILD)/ >> $@.temp; 
+	echo -n $(BUILD)/ > $@.temp; 
 	$(CC) -MM -I../build/include -D_FILE_OFFSET_BITS=64 $< $(INCLUDEFLAGS) >> $@.temp; 
 	echo -e "	$(CC) -c $< $(CFLAGS) $(DEFS) $(INCPATH) -o ${patsubst %.d, %.o, $@} " >> $@.temp ;
 	sed 's,\($*\)$(BUILD)/\.o[ :]*,\1.o  : ,g' < $@.temp > $@; 
