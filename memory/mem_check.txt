@@ -1,0 +1,6 @@
+现代c/c++编程, 内存与指针bug调试工具汇总
+1. glibc: mcheck.h
+2. gcc option : -g -fsanitize=address -fno-omit-frame-pointer 
+3. tcmalloc 带的内存检查工具
+4. valgrind 等工具 
+5. systemtap 动态调试工具
