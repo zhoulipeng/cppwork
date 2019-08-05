@@ -89,10 +89,21 @@ set undodir=~/.undodir
 " 设置NerdTree
 map <F3> :NERDTreeMirror<CR>
 map <F3> :NERDTreeToggle<CR>
+map <F4> :q!<CR>
 " quick compile 
-map <F4> :!make<CR>
+map <F5> :!make<CR>
 
 " 自动存盘 5s 
 set updatetime=3000
 " 关闭时自动存
 set autowriteall
+" 鼠标支持
+set mouse=a
+" 主题配色方案 /usr/local/share/vim/vim81 or /usr/share/vim/vim74
+:colorscheme evening
+" 自动跳转到上次浏览位置
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+       \| exe "normal g'\"" | endif
+endif
+
