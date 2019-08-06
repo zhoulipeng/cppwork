@@ -1,0 +1,10 @@
+# use in qt creator for beautifier
+########################3
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: false
+# indent for switch case
+IndentCaseLabels: false
