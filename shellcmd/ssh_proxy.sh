@@ -3,8 +3,18 @@ ssh -qTfnN -L 0.0.0.0:17922:localhost:17922 root@remote_ip_or_domain
 :<<!
 https://blog.csdn.net/liu_qingbo/article/details/78383892
 
-ssh-keygen  产生公钥与私钥对（.ssh/id_rsa.pub .ssh/id_rsa）. 备注： ssh-keygen 产生的公钥私钥对文件，可以拷贝到其它电脑上，其它电脑也能无密码登录远程主机
-
+ssh-keygen  产生公钥与私钥对（.ssh/id_rsa.pub .ssh/id_rsa）. 
+备注1： ssh-keygen 产生的公钥私钥对文件，可以拷贝到其它电脑上，其它电脑也能无密码登录远程主机
+备注1： ssh-keygen 产生的id_rsa的文件，只能给当前用户读写，否则报错如下：
+-------------------------------------------------------------------
+    yb@darkstar:~/.ssh$ ssh root@10.8.104.8
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Permissions 0644 for '/home/yb/.ssh/id_rsa' are too open.
+    It is required that your private key files are NOT accessible by others.
+    This private key will be ignored.
+-------------------------------------------------------------------
 ssh-copy-id 将本机的公钥复制到远程机器的authorized_keys文件中，ssh-copy-id也能让你有到远程机器的home, ~./ssh , 和 ~/.ssh/authorized_keys的权利
 
 第一步:在本地机器上使用ssh-keygen产生公钥私钥对
