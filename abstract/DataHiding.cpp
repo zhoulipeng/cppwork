@@ -13,8 +13,8 @@ class Base
 class Derivd:public Base
 {
     public:
-        //using Base::fun;
-        void fun(double data)
+        using Base::fun;
+        void fun(double data, int o)
         {
             cout<<"double"<<endl;
         }
