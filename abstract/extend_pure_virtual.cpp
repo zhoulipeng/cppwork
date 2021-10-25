@@ -21,7 +21,7 @@ public:
     virtual void Sleep() const = 0;
     // 纯虚函数的意义在于不可以实例化该类，且不用写"{}"这样无意义的东西，并且要求其某个派生类必然要实现该接口 
     virtual void Eat() const = 0;
-    virtual void EatHow(int weight) const ; // 如果EatHow是纯虚函数，则不能在子类Dog中用using 的方式引入，因为using不是真正的继承实现，而续汉书则要求子类必须实现 
+    virtual void EatHow(int weight) const ; // 如果EatHow是纯虚函数，则不能在子类Dog中用using 的方式引入，因为using不是真正的继承实现，而虚函数则要求子类必须实现 
     virtual void Reproduce() const = 0;
     virtual void Move() const = 0;
     virtual void Speak() const = 0;
