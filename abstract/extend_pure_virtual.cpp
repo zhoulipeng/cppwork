@@ -21,12 +21,22 @@ public:
     virtual void Sleep() const = 0;
     // 纯虚函数的意义在于不可以实例化该类，且不用写"{}"这样无意义的东西，并且要求其某个派生类必然要实现该接口 
     virtual void Eat() const = 0;
+    virtual void EatHow(int weight) const ; // 如果EatHow是纯虚函数，则不能在子类Dog中用using 的方式引入，因为using不是真正的继承实现，而续汉书则要求子类必须实现 
     virtual void Reproduce() const = 0;
     virtual void Move() const = 0;
     virtual void Speak() const = 0;
 private:
     int itsAge;
 };
+
+// 纯虚函数可以有代码实现，但必须定义在类申明的外面,且不改变虚函数性质
+void Animal::Eat() const {
+    cout << "Animal eat food." << endl;
+}
+
+void Animal::EatHow(int weitht) const {
+    cout << "Animal need eat "  << weitht << "kg food"<< endl;
+}
 
 Animal::Animal(int age):
 itsAge(age)
@@ -64,6 +74,7 @@ public:
     virtual ~Fish() {cout << "Fish destructor...\n"; }
     virtual void Sleep() const { cout << "fish snoring...\n"; }
     virtual void Eat() const { cout << "fish feeding...\n"; }
+    virtual void EatHow(int weight) const { cout << "fish feeding..." << weight/5 << endl; }
     virtual void Reproduce() const
     { cout << "fish laying eggs...\n"; }
     virtual void Move() const
@@ -75,15 +86,16 @@ class Horse : public Mammal
 {
 public:
     Horse(int age, COLOR color ):
-      Mammal(age), itsColor(color)
-      { cout << "Horse constructor...\n"; }
-      virtual ~Horse() { cout << "Horse destructor...\n"; }
-      virtual void Speak()const { cout << "Whinny!... \n"; }
-      virtual COLOR GetItsColor() const { return itsColor; }
-      virtual void Sleep() const
-      { cout << "Horse snoring...\n"; }
-      virtual void Eat() const { cout << "Horse feeding...\n"; }
-      virtual void Move() const { cout << "Horse running...\n";}
+    Mammal(age), itsColor(color)
+    { cout << "Horse constructor...\n"; }
+    virtual ~Horse() { cout << "Horse destructor...\n"; }
+    virtual void Speak()const { cout << "Whinny!... \n"; }
+    virtual COLOR GetItsColor() const { return itsColor; }
+    virtual void Sleep() const
+    { cout << "Horse snoring...\n"; }
+    virtual void Eat() const { cout << "Horse feeding...\n"; }
+    virtual void EatHow(int weight) const { cout << "horse  nead eating ..." << weight << endl; }
+    virtual void Move() const { cout << "Horse running...\n";}
 
 protected:
     COLOR itsColor;
@@ -92,17 +104,31 @@ protected:
 class Dog : public Mammal
 {
 public:
+/* see ./DataHiding.cpp
+关于using 的注释
+其实，并没有‘子类“重载”父类的方法’这种说法。
+《C++Primer Plus》 中说道：
+如果基类声明被重载了，则应该在派生类中重新定义所有的基类版本。
+如果在派生类中只重新定义一个版本，其他版本将会被隐藏，派生类对象将无法使用它们
+*/
+   // 如果子类重载父类有的方法,要输入的参数列表个数一样，编译器会优先搜索匹配子类符合条件的方法(导致隐藏)，再搜索父类方法(如果找不到就报错)
+    using Animal::EatHow;
     Dog(int age, COLOR color ):
-      Mammal(age), itsColor(color)
-      { cout << "Dog constructor...\n"; }
-      virtual ~Dog() { cout << "Dog destructor...\n"; }
-      virtual void Speak()const { cout << "Whoof!... \n"; }
-      // 如果在派生类中显式的调用基类中的纯虚函数，则基类必须实现纯虚函数接口的函数体
-      virtual void Sleep() const { cout << "Dog snoring...\n"; Animal::Sleep();}
-      virtual void Eat() const { cout << "Dog eating...\n"; }
-      virtual void Move() const { cout << "Dog running...\n"; }
-      virtual void Reproduce() const
-      { cout << "Dogs reproducing...\n"; }
+    Mammal(age), itsColor(color)
+    { cout << "Dog constructor...\n"; }
+    virtual ~Dog() { cout << "Dog destructor...\n"; }
+    virtual void Speak()const { cout << "Whoof!... \n"; }
+    // 如果在派生类中显式的调用基类中的纯虚函数，则基类必须实现纯虚函数接口的函数体
+    virtual void Sleep() const { cout << "Dog snoring...\n"; Animal::Sleep();}
+    virtual void Eat() const { 
+        Animal::Eat();
+        cout << "Dog eating...\n"; }
+    virtual void EatHow(double weight) const { 
+        cout << "Dog  nead eating(type:double) ..." << weight/5 << endl; }
+
+    virtual void Move() const { cout << "Dog running...\n"; }
+    virtual void Reproduce() const
+    { cout << "Dogs reproducing...\n"; }
 
 protected:
     COLOR itsColor;
@@ -138,6 +164,10 @@ int main()
             cout << pAnimal->GetAge() << endl;
             pAnimal->Speak();
             pAnimal->Eat();
+            pAnimal->EatHow(10);
+            if (choice == 1 ) {
+                ((Dog*)pAnimal)->EatHow(10);// 如果dog 类中不是用using 使父类 int 版本可见，那么 
+            }
             pAnimal->Reproduce();
             pAnimal->Move();
             pAnimal->Sleep();
