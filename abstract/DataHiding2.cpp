@@ -27,3 +27,14 @@ int main()
     d.fun(12.0);
     d.Base::fun(12.0);
 }
+/*
+[zhoulp@localhost abstract]$ ./DataHiding2.exe # 注释using
+double
+double
+int
+[zhoulp@localhost abstract]$ ./DataHiding2.exe # have using
+int
+double
+int
+
+ */
