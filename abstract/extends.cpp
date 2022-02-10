@@ -43,16 +43,16 @@ public:
 //    }
 //};
 //
-//class Pri_Derv : privater Base
-//{
-//public:
-//    void out_put_base_data()
-//    {
-//        cout << pub_mem << endl;    //正确，public成员是公有的
-//        cout << pro_mem << endl;    //正确，基类中protected成员可以被派生类访问
-//        cout << pri_mem << endl;    //错误，private成员只能在所在类内使用
-//    }
-//};
+class Pri_Derv : private Base
+{
+public:
+    void out_put_base_data()
+    {
+        cout << pub_mem << endl;    //正确，public成员是公有的
+        cout << pro_mem << endl;    //正确，基类中protected成员可以被派生类访问
+        //cout << pri_mem << endl;    //错误，private成员只能在所在类内使用
+    }
+};
 
 /*
  * 
