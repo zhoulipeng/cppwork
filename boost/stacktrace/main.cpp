@@ -1,4 +1,4 @@
-#include <boost/config.hpp>
+//#include <boost/config.hpp>
 
 #ifdef BOOST_NO_CXX11_RANGE_BASED_FOR
 #include <boost/stacktrace.hpp>
@@ -82,7 +82,7 @@ public:
         //cout << pri_mem << endl;    //错误，private成员只能在所在类内使用
         print_call("stacktrace:\n");
     }
-    int print_call(const std::string & note) {
+    BOOST_NOINLINE int print_call(const std::string & note) {
         cout << note << boost::stacktrace::stacktrace();
         return 0;
     }
