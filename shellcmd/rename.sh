@@ -14,3 +14,6 @@ do
     fi
 
 done
+
+# find 批量改名2
+find Texture -name AdvancedLotteryCheckBox.png -exec bash -c 'mv "$1" "${1/Advanced/DemoAv}"  ' -- {} \;
