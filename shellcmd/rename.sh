@@ -19,4 +19,5 @@ done
 find Texture -name AdvancedLotteryCheckBox.png -exec bash -c 'mv "$1" "${1/Advanced/DemoAv}"  ' -- {} \;
 
 # 批量给文件夹一类文件夹前缀 prefix_
-find bg -type f -name "*.png" -exec bash -c 'mv "$0" "$(dirname $0)/prefix_$(basename $0)"' {} \;
+# find png file not start with Mooncake to add name prefix 
+find bg -type f -name "*.png" ! -name "Mooncake*" -exec bash -c 'mv "$0" "$(dirname $0)/Mooncake_$(basename $0)"' {} \;
