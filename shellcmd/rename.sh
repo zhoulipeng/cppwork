@@ -15,5 +15,8 @@ do
 
 done
 
-# find 批量改名2
+# find 批量替换改名2
 find Texture -name AdvancedLotteryCheckBox.png -exec bash -c 'mv "$1" "${1/Advanced/DemoAv}"  ' -- {} \;
+
+# 批量给文件夹一类文件夹前缀 prefix_
+find bg -type f -name "*.png" -exec bash -c 'mv "$0" "$(dirname $0)/prefix_$(basename $0)"' {} \;
